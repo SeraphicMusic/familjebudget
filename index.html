@@ -546,11 +546,22 @@
             </div>
 
             <div id="dashboardContent" style="display: none;">
-                <!-- Month Selector -->
+                <!-- View Tabs -->
                 <div class="month-selector">
-                    <h3>Välj månad</h3>
-                    <div class="month-tabs" id="monthTabs"></div>
+                    <h3>Översikt</h3>
+                    <div class="month-tabs">
+                        <button class="month-tab active" onclick="switchView('overview')">📊 Dashboard</button>
+                        <button class="month-tab" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
+                    </div>
                 </div>
+
+                <!-- Dashboard View -->
+                <div id="overviewView">
+                    <!-- Month Selector -->
+                    <div class="month-selector" style="margin-top: 2rem;">
+                        <h3>Välj månad</h3>
+                        <div class="month-tabs" id="monthTabs"></div>
+                    </div>
 
                 <!-- Income Editor -->
                 <div class="income-editor">
@@ -651,6 +662,55 @@
                 </div>
             </div>
         </div>
+        </div>
+        <!-- End Dashboard/Overview View -->
+
+        <!-- Expenses Management View -->
+        <div id="expensesView" style="display: none;">
+            <div class="income-editor">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3>💳 Hantera gemensamma utgifter</h3>
+                    <div>
+                        <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+                            <option value="all">Alla kategorier</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <table id="expensesTable" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">
+                                <th style="padding: 1rem 0.75rem; text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--primary); z-index: 2; min-width: 200px;">Utgift</th>
+                                <th style="padding: 1rem 0.75rem; text-align: left; font-weight: 600; min-width: 140px;">Kategori</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jan</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Feb</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Mar</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Apr</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Maj</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jun</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jul</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Aug</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Sep</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Okt</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Nov</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Dec</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; background: rgba(255,255,255,0.1); min-width: 100px;">Totalt</th>
+                                <th style="padding: 1rem 0.5rem; text-align: center; font-weight: 600; background: rgba(255,255,255,0.1); min-width: 80px;">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--bg); border-radius: 10px; font-size: 0.9rem; color: var(--text-light);">
+                    💡 <strong>Tips:</strong> Klicka på ett belopp för att redigera det. Ändringar sparas automatiskt till Google Sheets.
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -660,6 +720,8 @@
         let budgetData = null;
         let currentMonth = 0;
         let incomeChart, budgetChart, categoryChart;
+        let currentView = 'overview';
+        let expensesData = [];
         
         const CLIENT_ID = window.localStorage.getItem('googleClientId') || '';
         const SPREADSHEET_ID = window.localStorage.getItem('spreadsheetId') || '';
@@ -812,6 +874,7 @@
             // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-14)
             // Starting from row 8: columns A=name, B=category, C-N=monthly values
             const categoryTotals = {};
+            expensesData = []; // Reset expenses data
             
             // Parse category data starting from row 8
             for (let i = 7; i < data.length; i++) {
@@ -824,11 +887,22 @@
                         categoryTotals[category] = 0;
                     }
                     
+                    // Collect monthly values
+                    const months = [];
                     // Sum all 12 months (columns C-N = index 2-13)
                     for (let monthIdx = 2; monthIdx <= 13; monthIdx++) {
                         const value = parseFloat(row[monthIdx]) || 0;
                         categoryTotals[category] += value;
+                        months.push(value);
                     }
+                    
+                    // Store expense data for table view
+                    expensesData.push({
+                        rowIndex: i + 1, // +1 because Sheets is 1-indexed
+                        name: expenseName,
+                        category: category,
+                        months: months
+                    });
                 }
             }
             
@@ -1124,6 +1198,139 @@
 
         function formatNumber(num) {
             return Math.round(num).toLocaleString('sv-SE');
+        }
+
+        function switchView(view) {
+            currentView = view;
+            
+            if (view === 'overview') {
+                document.getElementById('overviewView').style.display = 'block';
+                document.getElementById('expensesView').style.display = 'none';
+            } else if (view === 'expenses') {
+                document.getElementById('overviewView').style.display = 'none';
+                document.getElementById('expensesView').style.display = 'block';
+                renderExpensesTable();
+            }
+            
+            // Update tab styling
+            const allTabs = document.querySelectorAll('.month-selector .month-tab');
+            allTabs.forEach((tab, idx) => {
+                if (idx === 0 && view === 'overview') {
+                    tab.classList.add('active');
+                } else if (idx === 1 && view === 'expenses') {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        function renderExpensesTable() {
+            if (!budgetData || !budgetData.gemeensam) return;
+            
+            const tbody = document.getElementById('expensesTableBody');
+            const categoryFilter = document.getElementById('categoryFilter');
+            
+            // Populate category filter if empty
+            if (categoryFilter.options.length === 1) {
+                const categories = new Set();
+                expensesData.forEach(exp => categories.add(exp.category));
+                Array.from(categories).sort().forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoryFilter.appendChild(option);
+                });
+            }
+            
+            // Filter expenses
+            const selectedCategory = categoryFilter.value;
+            const filteredExpenses = selectedCategory === 'all' 
+                ? expensesData 
+                : expensesData.filter(exp => exp.category === selectedCategory);
+            
+            // Render table rows
+            tbody.innerHTML = filteredExpenses.map((expense, idx) => {
+                const total = expense.months.reduce((sum, val) => sum + val, 0);
+                const trend = calculateTrend(expense.months);
+                
+                return `
+                    <tr style="border-bottom: 1px solid var(--border); ${idx % 2 === 0 ? 'background: var(--bg);' : ''}">
+                        <td style="padding: 0.75rem; font-weight: 600; position: sticky; left: 0; background: ${idx % 2 === 0 ? 'var(--bg)' : 'white'}; z-index: 1;">${expense.name}</td>
+                        <td style="padding: 0.75rem;">
+                            <span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--primary); color: white; border-radius: 12px; font-size: 0.8rem;">
+                                ${expense.category}
+                            </span>
+                        </td>
+                        ${expense.months.map((value, monthIdx) => `
+                            <td style="padding: 0.5rem; text-align: right; cursor: pointer; transition: background 0.2s;" 
+                                onmouseenter="this.style.background='#e3f2fd'" 
+                                onmouseleave="this.style.background='transparent'"
+                                onclick="editExpenseCell(${expense.rowIndex}, ${monthIdx}, ${value}, '${expense.name}', ${monthIdx})">
+                                ${value > 0 ? formatNumber(value) : '-'}
+                            </td>
+                        `).join('')}
+                        <td style="padding: 0.75rem; text-align: right; font-weight: 700; background: var(--bg-light);">
+                            ${formatNumber(total)}
+                        </td>
+                        <td style="padding: 0.75rem; text-align: center; background: var(--bg-light);">
+                            ${trend}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function calculateTrend(months) {
+            // Simple trend: compare last 3 months avg vs first 3 months avg
+            const first3 = months.slice(0, 3).reduce((sum, val) => sum + val, 0) / 3;
+            const last3 = months.slice(-3).reduce((sum, val) => sum + val, 0) / 3;
+            
+            if (last3 === 0 && first3 === 0) return '➖';
+            if (first3 === 0) return '⬆️';
+            
+            const change = ((last3 - first3) / first3) * 100;
+            if (Math.abs(change) < 5) return '➖';
+            return change > 0 ? '⬆️' : '⬇️';
+        }
+
+        function filterExpenses() {
+            renderExpensesTable();
+        }
+
+        async function editExpenseCell(rowIndex, monthIndex, currentValue, expenseName, monthIdx) {
+            const monthName = monthNames[monthIdx];
+            const newValue = prompt(
+                `Redigera: ${expenseName}\\n` +
+                `Månad: ${monthName}\\n` +
+                `Nuvarande värde: ${currentValue} kr\\n\\n` +
+                `Ange nytt värde (kr):`,
+                currentValue
+            );
+            
+            if (newValue === null) return; // Cancelled
+            
+            const parsedValue = parseFloat(newValue) || 0;
+            
+            try {
+                // Column letter (C=Jan, D=Feb, etc.)
+                const columnLetter = String.fromCharCode(67 + monthIndex); // C is 67
+                await updateSheetCell('Gemensamma fasta utgifter', `${columnLetter}${rowIndex}`, parsedValue);
+                
+                // Update local data
+                expensesData.find(e => e.rowIndex === rowIndex).months[monthIndex] = parsedValue;
+                
+                // Re-render table
+                renderExpensesTable();
+                
+                // Reload budget data to update dashboard
+                await loadBudgetData();
+                
+                alert('✅ Utgift uppdaterad!');
+            } catch (error) {
+                console.error('Error saving expense:', error);
+                alert('❌ Fel vid sparande: ' + error.message);
+            }
         }
     </script>
 </body>
