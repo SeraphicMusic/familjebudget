@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #2D5A7B;
@@ -460,11 +459,11 @@
             <p class="subtitle">Hanna & Kalle</p>
         </div>
 
-        <!-- Setup Section (shown first time) -->
+        <!-- Setup Section -->
         <div id="setupSection" class="setup-section">
-            <h3>⚙️ Första gången? Konfigurera kopplingen till Google Drive</h3>
+            <h3>⚙️ Första gången? Konfigurera kopplingen till Google Sheets</h3>
             <div class="alert alert-info">
-                För att använda denna app behöver ni skapa ett Google Cloud-projekt och hämta ett Client ID. Se instruktioner nedan.
+                För att använda denna app behöver ni skapa ett Google Cloud-projekt och hämta ett Client ID.
             </div>
             
             <div class="input-group">
@@ -473,10 +472,10 @@
             </div>
 
             <div class="input-group">
-                <label>Budget-filens ID från Google Drive:</label>
-                <input type="text" id="fileIdInput" placeholder="1AbCdEfGhIjKlMnOpQrStUvWxYz">
+                <label>Spreadsheet ID (från URL:en):</label>
+                <input type="text" id="spreadsheetIdInput" placeholder="19_9ohRPppbrKkVjprpQSeUArSctIJzvBFVEegMHITP4">
                 <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
-                    Hittar ni i URL:en när ni öppnar filen i Drive: drive.google.com/file/d/<strong>FILE_ID</strong>/view
+                    Från URL:en: docs.google.com/spreadsheets/d/<strong>SPREADSHEET_ID</strong>/edit
                 </small>
             </div>
 
@@ -490,19 +489,21 @@
                     <h4>1. Skapa Google Cloud-projekt:</h4>
                     <ol>
                         <li>Gå till <a href="https://console.cloud.google.com" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
-                        <li>Klicka "Create Project" och ge det ett namn (t.ex. "Familjebudget")</li>
-                        <li>Aktivera Google Drive API för projektet</li>
+                        <li>Skapa nytt projekt (t.ex. "Familjebudget")</li>
+                        <li>Aktivera <strong>Google Sheets API</strong></li>
                         <li>Gå till "Credentials" → "Create Credentials" → "OAuth client ID"</li>
                         <li>Välj "Web application"</li>
-                        <li>Under "Authorized JavaScript origins" lägg till denna sidans URL</li>
-                        <li>Kopiera Client ID som skapas</li>
+                        <li>Under "Authorized JavaScript origins" lägg till din GitHub Pages URL</li>
+                        <li>Kopiera Client ID</li>
+                        <li>Under "OAuth consent screen" → Välj "Internal" (bara era Workspace-domäner)</li>
                     </ol>
 
-                    <h4 style="margin-top: 1rem;">2. Hitta File ID:</h4>
+                    <h4 style="margin-top: 1rem;">2. Hitta Spreadsheet ID:</h4>
                     <ol>
-                        <li>Öppna er budget-fil i Google Drive</li>
-                        <li>Titta i adressfältet - URL:en ser ut så här: <code>drive.google.com/file/d/<strong>DENNA-DEL-ÄR-FILE-ID</strong>/view</code></li>
-                        <li>Kopiera den långa strängen mellan /d/ och /view</li>
+                        <li>Öppna er budget i Google Sheets</li>
+                        <li>Titta i adressfältet</li>
+                        <li>URL:en ser ut: <code>docs.google.com/spreadsheets/d/<strong>DENNA-DEL</strong>/edit</code></li>
+                        <li>Kopiera delen mellan /d/ och /edit</li>
                     </ol>
                 </div>
             </details>
@@ -524,14 +525,14 @@
 
         <!-- Dashboard -->
         <div id="dashboard" class="dashboard">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <div id="userInfo" class="user-info"></div>
                 <button class="logout-btn" onclick="handleSignoutClick()">Logga ut</button>
             </div>
 
             <div id="loadingIndicator" class="loading">
                 <div class="spinner"></div>
-                <p>Läser budget från Google Drive...</p>
+                <p>Läser budget från Google Sheets...</p>
             </div>
 
             <div id="dashboardContent" style="display: none;">
@@ -577,7 +578,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara ändringar</button>
+                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara ändringar till Google Sheets</button>
                 </div>
 
                 <!-- Stats -->
@@ -629,16 +630,17 @@
         let accessToken = null;
         let budgetData = null;
         let currentMonth = 0;
+        let incomeChart, budgetChart;
+        
         const CLIENT_ID = window.localStorage.getItem('googleClientId') || '';
-        const FILE_ID = window.localStorage.getItem('budgetFileId') || '';
-        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+        const SPREADSHEET_ID = window.localStorage.getItem('spreadsheetId') || '';
+        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
         const monthNames = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
                            'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
 
-        // Check if config exists
         window.onload = function() {
-            if (CLIENT_ID && FILE_ID) {
+            if (CLIENT_ID && SPREADSHEET_ID) {
                 document.getElementById('setupSection').style.display = 'none';
                 document.getElementById('authSection').style.display = 'block';
                 initGoogleAuth();
@@ -649,15 +651,15 @@
 
         function saveConfig() {
             const clientId = document.getElementById('clientIdInput').value.trim();
-            const fileId = document.getElementById('fileIdInput').value.trim();
+            const spreadsheetId = document.getElementById('spreadsheetIdInput').value.trim();
 
-            if (!clientId || !fileId) {
-                alert('Vänligen fyll i både Client ID och File ID');
+            if (!clientId || !spreadsheetId) {
+                alert('Vänligen fyll i både Client ID och Spreadsheet ID');
                 return;
             }
 
             window.localStorage.setItem('googleClientId', clientId);
-            window.localStorage.setItem('budgetFileId', fileId);
+            window.localStorage.setItem('spreadsheetId', spreadsheetId);
             
             alert('Konfiguration sparad! Laddar om sidan...');
             window.location.reload();
@@ -689,13 +691,11 @@
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             
-            // Get user info
             const userInfo = await fetchUserInfo();
             if (userInfo) {
                 displayUserInfo(userInfo);
             }
 
-            // Load budget data
             await loadBudgetData();
         }
 
@@ -727,23 +727,17 @@
                 document.getElementById('loadingIndicator').style.display = 'block';
                 document.getElementById('dashboardContent').style.display = 'none';
 
-                const response = await fetch(
-                    `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media`,
-                    { headers: { 'Authorization': 'Bearer ' + accessToken } }
-                );
+                // Load all sheets
+                const [kalleData, hannaData, gemData] = await Promise.all([
+                    loadSheetData('Kalles fasta utgifter'),
+                    loadSheetData('Hannas fasta utgifter'),
+                    loadSheetData('Gemensamma fasta utgifter')
+                ]);
 
-                if (!response.ok) {
-                    throw new Error('Kunde inte läsa filen från Google Drive');
-                }
-
-                const arrayBuffer = await response.arrayBuffer();
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-
-                // Parse budget data
                 budgetData = {
-                    kalle: parsePersonSheet(workbook.Sheets['Kalles fasta utgifter']),
-                    hanna: parsePersonSheet(workbook.Sheets['Hannas fasta utgifter']),
-                    gemeensam: parseGemeenskapSheet(workbook.Sheets['Gemensamma fasta utgifter'])
+                    kalle: parsePersonData(kalleData),
+                    hanna: parsePersonData(hannaData),
+                    gemeensam: parseGemData(gemData)
                 };
 
                 renderDashboard();
@@ -758,38 +752,49 @@
             }
         }
 
-        function parsePersonSheet(sheet) {
-            const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        async function loadSheetData(sheetName) {
+            const response = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A1:M20`,
+                { headers: { 'Authorization': 'Bearer ' + accessToken } }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Kunde inte läsa "${sheetName}"`);
+            }
+
+            const data = await response.json();
+            return data.values || [];
+        }
+
+        function parsePersonData(data) {
+            // Row 1 = Lön (columns B-M = index 1-12)
+            // Row 2 = Bidrag
+            // Row 3 = Övrig inkomst
+            // Row 8 = Summa utgifter
             return {
-                lon: data[0]?.slice(1, 13) || Array(12).fill(0),
-                bidrag: data[1]?.slice(1, 13) || Array(12).fill(0),
-                ovrig: data[2]?.slice(1, 13) || Array(12).fill(0),
-                utgifter: data[7]?.slice(1, 13) || Array(12).fill(0)
+                lon: (data[0] || []).slice(1, 13).map(v => parseFloat(v) || 0),
+                bidrag: (data[1] || []).slice(1, 13).map(v => parseFloat(v) || 0),
+                ovrig: (data[2] || []).slice(1, 13).map(v => parseFloat(v) || 0),
+                utgifter: (data[7] || []).slice(1, 13).map(v => parseFloat(v) || 0)
             };
         }
 
-        function parseGemeenskapSheet(sheet) {
-            const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        function parseGemData(data) {
+            // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-13)
             return {
-                utgifter: data[1]?.slice(2, 14) || Array(12).fill(0)
+                utgifter: (data[1] || []).slice(2, 14).map(v => parseFloat(v) || 0)
             };
         }
 
         function renderDashboard() {
-            // Render month tabs
             const monthTabsDiv = document.getElementById('monthTabs');
             monthTabsDiv.innerHTML = monthNames.map((month, idx) => 
                 `<button class="month-tab ${idx === currentMonth ? 'active' : ''}" 
                          onclick="selectMonth(${idx})">${month}</button>`
             ).join('');
 
-            // Update stats
             updateStats();
-            
-            // Render charts
             renderCharts();
-
-            // Load current month data
             loadMonthData(currentMonth);
         }
 
@@ -801,38 +806,27 @@
         function loadMonthData(monthIndex) {
             document.getElementById('selectedMonthName').textContent = monthNames[monthIndex];
             
-            // Load Kalle's data
             document.getElementById('kalleLon').value = budgetData.kalle.lon[monthIndex] || 0;
             document.getElementById('kalleBidrag').value = budgetData.kalle.bidrag[monthIndex] || 0;
             document.getElementById('kalleOvrig').value = budgetData.kalle.ovrig[monthIndex] || 0;
 
-            // Load Hanna's data
             document.getElementById('hannaLon').value = budgetData.hanna.lon[monthIndex] || 0;
             document.getElementById('hannaBidrag').value = budgetData.hanna.bidrag[monthIndex] || 0;
             document.getElementById('hannaOvrig').value = budgetData.hanna.ovrig[monthIndex] || 0;
         }
 
         function updateStats() {
-            // Calculate totals
-            const totalKalleIncome = budgetData.kalle.lon.reduce((a,b) => (a||0) + (b||0), 0) +
-                                     budgetData.kalle.bidrag.reduce((a,b) => (a||0) + (b||0), 0) +
-                                     budgetData.kalle.ovrig.reduce((a,b) => (a||0) + (b||0), 0);
-            
-            const totalHannaIncome = budgetData.hanna.lon.reduce((a,b) => (a||0) + (b||0), 0) +
-                                     budgetData.hanna.bidrag.reduce((a,b) => (a||0) + (b||0), 0) +
-                                     budgetData.hanna.ovrig.reduce((a,b) => (a||0) + (b||0), 0);
-
+            const totalKalleIncome = sum(budgetData.kalle.lon) + sum(budgetData.kalle.bidrag) + sum(budgetData.kalle.ovrig);
+            const totalHannaIncome = sum(budgetData.hanna.lon) + sum(budgetData.hanna.bidrag) + sum(budgetData.hanna.ovrig);
             const totalIncome = totalKalleIncome + totalHannaIncome;
 
-            const totalGemExpenses = budgetData.gemeensam.utgifter.reduce((a,b) => (a||0) + (b||0), 0);
-            const totalPersonExpenses = budgetData.kalle.utgifter.reduce((a,b) => (a||0) + (b||0), 0) +
-                                        budgetData.hanna.utgifter.reduce((a,b) => (a||0) + (b||0), 0);
+            const totalGemExpenses = sum(budgetData.gemeensam.utgifter);
+            const totalPersonExpenses = sum(budgetData.kalle.utgifter) + sum(budgetData.hanna.utgifter);
             const totalExpenses = totalGemExpenses + totalPersonExpenses;
 
             const totalSavings = totalIncome - totalExpenses;
             const savingsRate = totalIncome > 0 ? ((totalSavings / totalIncome) * 100).toFixed(1) : 0;
 
-            // Current month budget
             const monthIncome = (budgetData.kalle.lon[currentMonth] || 0) + 
                                (budgetData.kalle.bidrag[currentMonth] || 0) +
                                (budgetData.kalle.ovrig[currentMonth] || 0) +
@@ -846,7 +840,6 @@
             
             const monthBudget = monthIncome - monthExpenses;
 
-            // Update DOM
             document.getElementById('totalIncome').textContent = formatNumber(totalIncome) + ' kr';
             document.getElementById('totalExpenses').textContent = formatNumber(totalExpenses) + ' kr';
             document.getElementById('totalSavings').textContent = formatNumber(totalSavings) + ' kr';
@@ -856,7 +849,6 @@
         }
 
         function renderCharts() {
-            // Prepare data
             const monthlyIncome = monthNames.map((_, idx) => {
                 return (budgetData.kalle.lon[idx] || 0) + 
                        (budgetData.kalle.bidrag[idx] || 0) +
@@ -874,9 +866,12 @@
 
             const monthlyBudget = monthlyIncome.map((income, idx) => income - monthlyExpenses[idx]);
 
-            // Income Chart
+            // Destroy old charts if they exist
+            if (incomeChart) incomeChart.destroy();
+            if (budgetChart) budgetChart.destroy();
+
             const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-            new Chart(incomeCtx, {
+            incomeChart = new Chart(incomeCtx, {
                 type: 'line',
                 data: {
                     labels: monthNames,
@@ -910,9 +905,8 @@
                 }
             });
 
-            // Budget Chart
             const budgetCtx = document.getElementById('budgetChart').getContext('2d');
-            new Chart(budgetCtx, {
+            budgetChart = new Chart(budgetCtx, {
                 type: 'bar',
                 data: {
                     labels: monthNames,
@@ -935,7 +929,7 @@
 
         async function saveIncomeData() {
             try {
-                // Update budget data with form values
+                // Update local data
                 budgetData.kalle.lon[currentMonth] = parseFloat(document.getElementById('kalleLon').value) || 0;
                 budgetData.kalle.bidrag[currentMonth] = parseFloat(document.getElementById('kalleBidrag').value) || 0;
                 budgetData.kalle.ovrig[currentMonth] = parseFloat(document.getElementById('kalleOvrig').value) || 0;
@@ -944,60 +938,51 @@
                 budgetData.hanna.bidrag[currentMonth] = parseFloat(document.getElementById('hannaBidrag').value) || 0;
                 budgetData.hanna.ovrig[currentMonth] = parseFloat(document.getElementById('hannaOvrig').value) || 0;
 
-                // Download current file
-                const response = await fetch(
-                    `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media`,
-                    { headers: { 'Authorization': 'Bearer ' + accessToken } }
-                );
-                const arrayBuffer = await response.arrayBuffer();
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                // Column letters (B=1, C=2, etc. -> month 0 is column B)
+                const columnLetter = String.fromCharCode(66 + currentMonth); // B is 66
 
                 // Update Kalle's sheet
-                const kalleSheet = workbook.Sheets['Kalles fasta utgifter'];
-                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.lon], { origin: 'B1' });
-                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.bidrag], { origin: 'B2' });
-                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.ovrig], { origin: 'B3' });
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}1`, budgetData.kalle.lon[currentMonth]);
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}2`, budgetData.kalle.bidrag[currentMonth]);
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}3`, budgetData.kalle.ovrig[currentMonth]);
 
                 // Update Hanna's sheet
-                const hannaSheet = workbook.Sheets['Hannas fasta utgifter'];
-                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.lon], { origin: 'B1' });
-                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.bidrag], { origin: 'B2' });
-                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.ovrig], { origin: 'B3' });
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}1`, budgetData.hanna.lon[currentMonth]);
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}2`, budgetData.hanna.bidrag[currentMonth]);
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}3`, budgetData.hanna.ovrig[currentMonth]);
 
-                // Write back to file
-                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-                const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-                const metadata = {
-                    name: '_2025__Månadsbudget.xlsx',
-                    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                };
-
-                const form = new FormData();
-                form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-                form.append('file', blob);
-
-                const uploadResponse = await fetch(
-                    `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=multipart`,
-                    {
-                        method: 'PATCH',
-                        headers: { 'Authorization': 'Bearer ' + accessToken },
-                        body: form
-                    }
-                );
-
-                if (uploadResponse.ok) {
-                    alert('✅ Inkomster sparade!');
-                    updateStats();
-                    renderCharts();
-                } else {
-                    throw new Error('Kunde inte spara till Google Drive');
-                }
+                alert('✅ Inkomster sparade till Google Sheets!');
+                updateStats();
+                renderCharts();
 
             } catch (error) {
                 console.error('Error saving:', error);
                 alert('❌ Fel vid sparande: ' + error.message);
             }
+        }
+
+        async function updateSheetCell(sheetName, cell, value) {
+            const response = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!${cell}?valueInputOption=RAW`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        values: [[value]]
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Kunde inte uppdatera ${sheetName}!${cell}`);
+            }
+        }
+
+        function sum(arr) {
+            return arr.reduce((a, b) => a + b, 0);
         }
 
         function formatNumber(num) {
