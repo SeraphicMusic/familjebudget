@@ -634,6 +634,21 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Category Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <h3>🏷️ Utgifter per Kategori</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>📊 Kategoriöversikt</h3>
+                        <div id="categoryList" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -644,7 +659,7 @@
         let accessToken = null;
         let budgetData = null;
         let currentMonth = 0;
-        let incomeChart, budgetChart;
+        let incomeChart, budgetChart, categoryChart;
         
         const CLIENT_ID = window.localStorage.getItem('googleClientId') || '';
         const SPREADSHEET_ID = window.localStorage.getItem('spreadsheetId') || '';
@@ -795,8 +810,31 @@
 
         function parseGemData(data) {
             // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-13)
+            // Starting from row 8: columns A=name, B=category, C-N=monthly values
+            const categoryTotals = {};
+            
+            // Parse category data starting from row 8
+            for (let i = 7; i < data.length; i++) {
+                const row = data[i];
+                const expenseName = row[0];
+                const category = row[1];
+                
+                if (expenseName && category && typeof category === 'string') {
+                    if (!categoryTotals[category]) {
+                        categoryTotals[category] = 0;
+                    }
+                    
+                    // Sum all months (columns C-N = index 2-13)
+                    for (let monthIdx = 2; monthIdx <= 13; monthIdx++) {
+                        const value = parseFloat(row[monthIdx]) || 0;
+                        categoryTotals[category] += value;
+                    }
+                }
+            }
+            
             return {
-                utgifter: (data[1] || []).slice(2, 14).map(v => parseFloat(v) || 0)
+                utgifter: (data[1] || []).slice(2, 14).map(v => parseFloat(v) || 0),
+                categories: categoryTotals
             };
         }
 
@@ -895,7 +933,9 @@
             // Destroy old charts if they exist
             if (incomeChart) incomeChart.destroy();
             if (budgetChart) budgetChart.destroy();
+            if (categoryChart) categoryChart.destroy();
 
+            // Income Chart
             const incomeCtx = document.getElementById('incomeChart').getContext('2d');
             incomeChart = new Chart(incomeCtx, {
                 type: 'line',
@@ -931,6 +971,7 @@
                 }
             });
 
+            // Budget Chart
             const budgetCtx = document.getElementById('budgetChart').getContext('2d');
             budgetChart = new Chart(budgetCtx, {
                 type: 'bar',
@@ -951,6 +992,76 @@
                     }
                 }
             });
+
+            // Category Chart
+            if (budgetData.gemeensam.categories) {
+                const categoryData = Object.entries(budgetData.gemeensam.categories)
+                    .sort((a, b) => b[1] - a[1]); // Sort by value descending
+                
+                const categoryColors = [
+                    '#2D5A7B', '#4A9B8E', '#D4A574', '#8FC1A9',
+                    '#C8B8A8', '#E8D5C4', '#3a6d8f', '#5fb3a4'
+                ];
+
+                const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+                categoryChart = new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryData.map(([name, _]) => name),
+                        datasets: [{
+                            data: categoryData.map(([_, value]) => value),
+                            backgroundColor: categoryColors,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                display: true, 
+                                position: 'bottom',
+                                labels: {
+                                    padding: 15,
+                                    font: { size: 11 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.parsed;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return context.label + ': ' + formatNumber(value) + ' kr (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Render category list
+                const categoryListDiv = document.getElementById('categoryList');
+                categoryListDiv.innerHTML = categoryData.map(([category, total], idx) => {
+                    const monthlyAvg = Math.round(total / 12);
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: ${idx % 2 === 0 ? '#f8fafb' : 'white'}; border-radius: 8px; margin-bottom: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--text); margin-bottom: 0.25rem;">
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: ${categoryColors[idx]}; margin-right: 0.5rem;"></span>
+                                    ${category}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-light);">
+                                    ⌀ ${formatNumber(monthlyAvg)} kr/mån
+                                </div>
+                            </div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary); font-family: 'Crimson Pro', serif;">
+                                ${formatNumber(total)} kr
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
 
         async function saveIncomeData() {
