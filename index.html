@@ -783,7 +783,7 @@
 
         async function loadSheetData(sheetName) {
             const response = await fetch(
-                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A1:M20`,
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A1:N65`,
                 { headers: { 'Authorization': 'Bearer ' + accessToken } }
             );
 
@@ -796,20 +796,20 @@
         }
 
         function parsePersonData(data) {
-            // Row 1 = Lön (columns B-M = index 1-12)
+            // Row 1 = Lön (columns B-M = index 1-13 for 12 months)
             // Row 2 = Bidrag
             // Row 3 = Övrig inkomst
             // Row 8 = Summa utgifter
             return {
-                lon: (data[0] || []).slice(1, 13).map(v => parseFloat(v) || 0),
-                bidrag: (data[1] || []).slice(1, 13).map(v => parseFloat(v) || 0),
-                ovrig: (data[2] || []).slice(1, 13).map(v => parseFloat(v) || 0),
-                utgifter: (data[7] || []).slice(1, 13).map(v => parseFloat(v) || 0)
+                lon: (data[0] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                bidrag: (data[1] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                ovrig: (data[2] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                utgifter: (data[7] || []).slice(1, 14).map(v => parseFloat(v) || 0)
             };
         }
 
         function parseGemData(data) {
-            // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-13)
+            // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-14)
             // Starting from row 8: columns A=name, B=category, C-N=monthly values
             const categoryTotals = {};
             
@@ -824,7 +824,7 @@
                         categoryTotals[category] = 0;
                     }
                     
-                    // Sum all months (columns C-N = index 2-13)
+                    // Sum all 12 months (columns C-N = index 2-13)
                     for (let monthIdx = 2; monthIdx <= 13; monthIdx++) {
                         const value = parseFloat(row[monthIdx]) || 0;
                         categoryTotals[category] += value;
