@@ -386,6 +386,16 @@
             margin-bottom: 1.5rem;
         }
 
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 300px !important;
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
@@ -612,12 +622,16 @@
                 <div class="charts-section">
                     <div class="chart-card">
                         <h3>📈 Inkomster vs Utgifter per Månad</h3>
-                        <canvas id="incomeChart" height="250"></canvas>
+                        <div class="chart-wrapper">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
                     </div>
 
                     <div class="chart-card">
                         <h3>💰 Månatlig Budget</h3>
-                        <canvas id="budgetChart" height="250"></canvas>
+                        <div class="chart-wrapper">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -800,7 +814,19 @@
 
         function selectMonth(monthIndex) {
             currentMonth = monthIndex;
-            renderDashboard();
+            
+            // Update month tabs
+            document.querySelectorAll('.month-tab').forEach((tab, idx) => {
+                if (idx === monthIndex) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Load month data and update stats (but don't re-render charts)
+            loadMonthData(currentMonth);
+            updateStats();
         }
 
         function loadMonthData(monthIndex) {
