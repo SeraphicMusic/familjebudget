@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familjebudget 2024 - Hanna & Kalle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #2D5A7B;
+            --primary-light: #3a6d8f;
+            --secondary: #4A9B8E;
+            --accent: #D4A574;
+            --bg: #f5f7fa;
+            --bg-light: #ffffff;
+            --text: #1a3a4a;
+            --text-light: #6b7c8b;
+            --border: #e8eef3;
+            --success: #4A9B8E;
+            --warning: #D4A574;
+            --danger: #c74545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #e8eef3 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .auth-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 500px;
+            margin: 4rem auto;
+        }
+
+        .google-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .google-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 90, 123, 0.3);
+        }
+
+        .setup-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .setup-section h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5fb3a4;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: #e0b888;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .user-info {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-card.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--secondary) 0%, #5fb3a4 100%);
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-detail {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .month-selector {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .month-selector h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .month-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .month-tab {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .month-tab:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .month-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .income-editor {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .income-editor h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .income-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .person-section {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .person-section h4 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .save-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .chart-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border: 1px solid #81c784;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffb74d;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid,
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .income-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .month-tabs {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Familjebudget 2024</h1>
+            <p class="subtitle">Hanna & Kalle</p>
+        </div>
+
+        <!-- Setup Section (shown first time) -->
+        <div id="setupSection" class="setup-section">
+            <h3>⚙️ Första gången? Konfigurera kopplingen till Google Drive</h3>
+            <div class="alert alert-info">
+                För att använda denna app behöver ni skapa ett Google Cloud-projekt och hämta ett Client ID. Se instruktioner nedan.
+            </div>
+            
+            <div class="input-group">
+                <label>Google Cloud Client ID:</label>
+                <input type="text" id="clientIdInput" placeholder="123456789-abcdefg.apps.googleusercontent.com">
+            </div>
+
+            <div class="input-group">
+                <label>Budget-filens ID från Google Drive:</label>
+                <input type="text" id="fileIdInput" placeholder="1AbCdEfGhIjKlMnOpQrStUvWxYz">
+                <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                    Hittar ni i URL:en när ni öppnar filen i Drive: drive.google.com/file/d/<strong>FILE_ID</strong>/view
+                </small>
+            </div>
+
+            <button class="btn" onclick="saveConfig()">Spara konfiguration</button>
+
+            <details style="margin-top: 2rem; padding: 1rem; background: var(--bg); border-radius: 10px;">
+                <summary style="cursor: pointer; font-weight: 600; color: var(--primary);">
+                    📖 Steg-för-steg instruktioner
+                </summary>
+                <div style="margin-top: 1rem; line-height: 1.8; color: var(--text-light);">
+                    <h4>1. Skapa Google Cloud-projekt:</h4>
+                    <ol>
+                        <li>Gå till <a href="https://console.cloud.google.com" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
+                        <li>Klicka "Create Project" och ge det ett namn (t.ex. "Familjebudget")</li>
+                        <li>Aktivera Google Drive API för projektet</li>
+                        <li>Gå till "Credentials" → "Create Credentials" → "OAuth client ID"</li>
+                        <li>Välj "Web application"</li>
+                        <li>Under "Authorized JavaScript origins" lägg till denna sidans URL</li>
+                        <li>Kopiera Client ID som skapas</li>
+                    </ol>
+
+                    <h4 style="margin-top: 1rem;">2. Hitta File ID:</h4>
+                    <ol>
+                        <li>Öppna er budget-fil i Google Drive</li>
+                        <li>Titta i adressfältet - URL:en ser ut så här: <code>drive.google.com/file/d/<strong>DENNA-DEL-ÄR-FILE-ID</strong>/view</code></li>
+                        <li>Kopiera den långa strängen mellan /d/ och /view</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section" style="display: none;">
+            <h2 style="margin-bottom: 1.5rem;">Logga in för att komma åt er budget</h2>
+            <button class="google-btn" onclick="handleAuthClick()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Logga in med Google
+            </button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div id="userInfo" class="user-info"></div>
+                <button class="logout-btn" onclick="handleSignoutClick()">Logga ut</button>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <p>Läser budget från Google Drive...</p>
+            </div>
+
+            <div id="dashboardContent" style="display: none;">
+                <!-- Month Selector -->
+                <div class="month-selector">
+                    <h3>Välj månad</h3>
+                    <div class="month-tabs" id="monthTabs"></div>
+                </div>
+
+                <!-- Income Editor -->
+                <div class="income-editor">
+                    <h3>✏️ Uppdatera inkomster för <span id="selectedMonthName"></span></h3>
+                    <div class="income-grid">
+                        <div class="person-section">
+                            <h4>Kalle</h4>
+                            <div class="form-group">
+                                <label>Lön (kr)</label>
+                                <input type="number" id="kalleLon" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Bidrag (kr)</label>
+                                <input type="number" id="kalleBidrag" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Övrig inkomst (kr)</label>
+                                <input type="number" id="kalleOvrig" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="person-section">
+                            <h4>Hanna</h4>
+                            <div class="form-group">
+                                <label>Lön (kr)</label>
+                                <input type="number" id="hannaLon" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Bidrag (kr)</label>
+                                <input type="number" id="hannaBidrag" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Övrig inkomst (kr)</label>
+                                <input type="number" id="hannaOvrig" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara ändringar</button>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-label">Total Inkomst (Året)</div>
+                        <div class="stat-value" id="totalIncome">0 kr</div>
+                        <div class="stat-detail">Från alla inkomstkällor</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Totala Utgifter (Året)</div>
+                        <div class="stat-value" id="totalExpenses">0 kr</div>
+                        <div class="stat-detail">Gemensamma + Personliga</div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-label">Sparat (Året)</div>
+                        <div class="stat-value" id="totalSavings">0 kr</div>
+                        <div class="stat-detail" id="savingsRate">Sparkvot: 0%</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Budget (<span id="currentMonthStat"></span>)</div>
+                        <div class="stat-value" id="monthBudget">0 kr</div>
+                        <div class="stat-detail">Inkomst - Utgifter</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <h3>📈 Inkomster vs Utgifter per Månad</h3>
+                        <canvas id="incomeChart" height="250"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>💰 Månatlig Budget</h3>
+                        <canvas id="budgetChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        let tokenClient;
+        let accessToken = null;
+        let budgetData = null;
+        let currentMonth = 0;
+        const CLIENT_ID = window.localStorage.getItem('googleClientId') || '';
+        const FILE_ID = window.localStorage.getItem('budgetFileId') || '';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+
+        const monthNames = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
+                           'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
+
+        // Check if config exists
+        window.onload = function() {
+            if (CLIENT_ID && FILE_ID) {
+                document.getElementById('setupSection').style.display = 'none';
+                document.getElementById('authSection').style.display = 'block';
+                initGoogleAuth();
+            } else {
+                document.getElementById('setupSection').style.display = 'block';
+            }
+        };
+
+        function saveConfig() {
+            const clientId = document.getElementById('clientIdInput').value.trim();
+            const fileId = document.getElementById('fileIdInput').value.trim();
+
+            if (!clientId || !fileId) {
+                alert('Vänligen fyll i både Client ID och File ID');
+                return;
+            }
+
+            window.localStorage.setItem('googleClientId', clientId);
+            window.localStorage.setItem('budgetFileId', fileId);
+            
+            alert('Konfiguration sparad! Laddar om sidan...');
+            window.location.reload();
+        }
+
+        function initGoogleAuth() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (tokenResponse) => {
+                    accessToken = tokenResponse.access_token;
+                    onAuthSuccess();
+                },
+            });
+        }
+
+        function handleAuthClick() {
+            tokenClient.requestAccessToken();
+        }
+
+        function handleSignoutClick() {
+            accessToken = null;
+            budgetData = null;
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('authSection').style.display = 'block';
+        }
+
+        async function onAuthSuccess() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            
+            // Get user info
+            const userInfo = await fetchUserInfo();
+            if (userInfo) {
+                displayUserInfo(userInfo);
+            }
+
+            // Load budget data
+            await loadBudgetData();
+        }
+
+        async function fetchUserInfo() {
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+                return null;
+            }
+        }
+
+        function displayUserInfo(userInfo) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <img src="${userInfo.picture}" alt="${userInfo.name}">
+                <div>
+                    <div class="name">${userInfo.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light);">${userInfo.email}</div>
+                </div>
+            `;
+        }
+
+        async function loadBudgetData() {
+            try {
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('dashboardContent').style.display = 'none';
+
+                const response = await fetch(
+                    `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media`,
+                    { headers: { 'Authorization': 'Bearer ' + accessToken } }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Kunde inte läsa filen från Google Drive');
+                }
+
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+                // Parse budget data
+                budgetData = {
+                    kalle: parsePersonSheet(workbook.Sheets['Kalles fasta utgifter']),
+                    hanna: parsePersonSheet(workbook.Sheets['Hannas fasta utgifter']),
+                    gemeensam: parseGemeenskapSheet(workbook.Sheets['Gemensamma fasta utgifter'])
+                };
+
+                renderDashboard();
+                
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading budget:', error);
+                alert('Fel vid laddning av budget: ' + error.message);
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        function parsePersonSheet(sheet) {
+            const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            return {
+                lon: data[0]?.slice(1, 13) || Array(12).fill(0),
+                bidrag: data[1]?.slice(1, 13) || Array(12).fill(0),
+                ovrig: data[2]?.slice(1, 13) || Array(12).fill(0),
+                utgifter: data[7]?.slice(1, 13) || Array(12).fill(0)
+            };
+        }
+
+        function parseGemeenskapSheet(sheet) {
+            const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            return {
+                utgifter: data[1]?.slice(2, 14) || Array(12).fill(0)
+            };
+        }
+
+        function renderDashboard() {
+            // Render month tabs
+            const monthTabsDiv = document.getElementById('monthTabs');
+            monthTabsDiv.innerHTML = monthNames.map((month, idx) => 
+                `<button class="month-tab ${idx === currentMonth ? 'active' : ''}" 
+                         onclick="selectMonth(${idx})">${month}</button>`
+            ).join('');
+
+            // Update stats
+            updateStats();
+            
+            // Render charts
+            renderCharts();
+
+            // Load current month data
+            loadMonthData(currentMonth);
+        }
+
+        function selectMonth(monthIndex) {
+            currentMonth = monthIndex;
+            renderDashboard();
+        }
+
+        function loadMonthData(monthIndex) {
+            document.getElementById('selectedMonthName').textContent = monthNames[monthIndex];
+            
+            // Load Kalle's data
+            document.getElementById('kalleLon').value = budgetData.kalle.lon[monthIndex] || 0;
+            document.getElementById('kalleBidrag').value = budgetData.kalle.bidrag[monthIndex] || 0;
+            document.getElementById('kalleOvrig').value = budgetData.kalle.ovrig[monthIndex] || 0;
+
+            // Load Hanna's data
+            document.getElementById('hannaLon').value = budgetData.hanna.lon[monthIndex] || 0;
+            document.getElementById('hannaBidrag').value = budgetData.hanna.bidrag[monthIndex] || 0;
+            document.getElementById('hannaOvrig').value = budgetData.hanna.ovrig[monthIndex] || 0;
+        }
+
+        function updateStats() {
+            // Calculate totals
+            const totalKalleIncome = budgetData.kalle.lon.reduce((a,b) => (a||0) + (b||0), 0) +
+                                     budgetData.kalle.bidrag.reduce((a,b) => (a||0) + (b||0), 0) +
+                                     budgetData.kalle.ovrig.reduce((a,b) => (a||0) + (b||0), 0);
+            
+            const totalHannaIncome = budgetData.hanna.lon.reduce((a,b) => (a||0) + (b||0), 0) +
+                                     budgetData.hanna.bidrag.reduce((a,b) => (a||0) + (b||0), 0) +
+                                     budgetData.hanna.ovrig.reduce((a,b) => (a||0) + (b||0), 0);
+
+            const totalIncome = totalKalleIncome + totalHannaIncome;
+
+            const totalGemExpenses = budgetData.gemeensam.utgifter.reduce((a,b) => (a||0) + (b||0), 0);
+            const totalPersonExpenses = budgetData.kalle.utgifter.reduce((a,b) => (a||0) + (b||0), 0) +
+                                        budgetData.hanna.utgifter.reduce((a,b) => (a||0) + (b||0), 0);
+            const totalExpenses = totalGemExpenses + totalPersonExpenses;
+
+            const totalSavings = totalIncome - totalExpenses;
+            const savingsRate = totalIncome > 0 ? ((totalSavings / totalIncome) * 100).toFixed(1) : 0;
+
+            // Current month budget
+            const monthIncome = (budgetData.kalle.lon[currentMonth] || 0) + 
+                               (budgetData.kalle.bidrag[currentMonth] || 0) +
+                               (budgetData.kalle.ovrig[currentMonth] || 0) +
+                               (budgetData.hanna.lon[currentMonth] || 0) +
+                               (budgetData.hanna.bidrag[currentMonth] || 0) +
+                               (budgetData.hanna.ovrig[currentMonth] || 0);
+            
+            const monthExpenses = (budgetData.gemeensam.utgifter[currentMonth] || 0) +
+                                 (budgetData.kalle.utgifter[currentMonth] || 0) +
+                                 (budgetData.hanna.utgifter[currentMonth] || 0);
+            
+            const monthBudget = monthIncome - monthExpenses;
+
+            // Update DOM
+            document.getElementById('totalIncome').textContent = formatNumber(totalIncome) + ' kr';
+            document.getElementById('totalExpenses').textContent = formatNumber(totalExpenses) + ' kr';
+            document.getElementById('totalSavings').textContent = formatNumber(totalSavings) + ' kr';
+            document.getElementById('savingsRate').textContent = `Sparkvot: ${savingsRate}%`;
+            document.getElementById('currentMonthStat').textContent = monthNames[currentMonth];
+            document.getElementById('monthBudget').textContent = formatNumber(monthBudget) + ' kr';
+        }
+
+        function renderCharts() {
+            // Prepare data
+            const monthlyIncome = monthNames.map((_, idx) => {
+                return (budgetData.kalle.lon[idx] || 0) + 
+                       (budgetData.kalle.bidrag[idx] || 0) +
+                       (budgetData.kalle.ovrig[idx] || 0) +
+                       (budgetData.hanna.lon[idx] || 0) +
+                       (budgetData.hanna.bidrag[idx] || 0) +
+                       (budgetData.hanna.ovrig[idx] || 0);
+            });
+
+            const monthlyExpenses = monthNames.map((_, idx) => {
+                return (budgetData.gemeensam.utgifter[idx] || 0) +
+                       (budgetData.kalle.utgifter[idx] || 0) +
+                       (budgetData.hanna.utgifter[idx] || 0);
+            });
+
+            const monthlyBudget = monthlyIncome.map((income, idx) => income - monthlyExpenses[idx]);
+
+            // Income Chart
+            const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+            new Chart(incomeCtx, {
+                type: 'line',
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        {
+                            label: 'Inkomst',
+                            data: monthlyIncome,
+                            borderColor: '#2D5A7B',
+                            backgroundColor: 'rgba(45, 90, 123, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Utgift',
+                            data: monthlyExpenses,
+                            borderColor: '#D4A574',
+                            backgroundColor: 'rgba(212, 165, 116, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'bottom' }
+                    }
+                }
+            });
+
+            // Budget Chart
+            const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(budgetCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [{
+                        label: 'Budget',
+                        data: monthlyBudget,
+                        backgroundColor: monthlyBudget.map(v => v >= 0 ? '#4A9B8E' : '#c74545'),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        async function saveIncomeData() {
+            try {
+                // Update budget data with form values
+                budgetData.kalle.lon[currentMonth] = parseFloat(document.getElementById('kalleLon').value) || 0;
+                budgetData.kalle.bidrag[currentMonth] = parseFloat(document.getElementById('kalleBidrag').value) || 0;
+                budgetData.kalle.ovrig[currentMonth] = parseFloat(document.getElementById('kalleOvrig').value) || 0;
+
+                budgetData.hanna.lon[currentMonth] = parseFloat(document.getElementById('hannaLon').value) || 0;
+                budgetData.hanna.bidrag[currentMonth] = parseFloat(document.getElementById('hannaBidrag').value) || 0;
+                budgetData.hanna.ovrig[currentMonth] = parseFloat(document.getElementById('hannaOvrig').value) || 0;
+
+                // Download current file
+                const response = await fetch(
+                    `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media`,
+                    { headers: { 'Authorization': 'Bearer ' + accessToken } }
+                );
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+                // Update Kalle's sheet
+                const kalleSheet = workbook.Sheets['Kalles fasta utgifter'];
+                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.lon], { origin: 'B1' });
+                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.bidrag], { origin: 'B2' });
+                XLSX.utils.sheet_add_aoa(kalleSheet, [budgetData.kalle.ovrig], { origin: 'B3' });
+
+                // Update Hanna's sheet
+                const hannaSheet = workbook.Sheets['Hannas fasta utgifter'];
+                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.lon], { origin: 'B1' });
+                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.bidrag], { origin: 'B2' });
+                XLSX.utils.sheet_add_aoa(hannaSheet, [budgetData.hanna.ovrig], { origin: 'B3' });
+
+                // Write back to file
+                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+                const metadata = {
+                    name: '_2025__Månadsbudget.xlsx',
+                    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                };
+
+                const form = new FormData();
+                form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                form.append('file', blob);
+
+                const uploadResponse = await fetch(
+                    `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=multipart`,
+                    {
+                        method: 'PATCH',
+                        headers: { 'Authorization': 'Bearer ' + accessToken },
+                        body: form
+                    }
+                );
+
+                if (uploadResponse.ok) {
+                    alert('✅ Inkomster sparade!');
+                    updateStats();
+                    renderCharts();
+                } else {
+                    throw new Error('Kunde inte spara till Google Drive');
+                }
+
+            } catch (error) {
+                console.error('Error saving:', error);
+                alert('❌ Fel vid sparande: ' + error.message);
+            }
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('sv-SE');
+        }
+    </script>
+</body>
+</html>
