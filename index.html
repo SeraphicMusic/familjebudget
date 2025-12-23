@@ -142,6 +142,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         .month-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .view-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .month-tab {
             padding: 0.5rem 1rem;
             border: 2px solid var(--border);
@@ -153,6 +154,7 @@
         }
         .month-tab:hover { border-color: var(--primary); background: var(--bg); }
         .month-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+        #expensesTable td:hover { background: #e3f2fd; }
         .income-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -250,10 +252,21 @@
             </div>
 
             <div id="dashboardContent" style="display: none;">
+                <!-- View Tabs -->
                 <div class="month-selector">
-                    <h3>Välj månad</h3>
-                    <div class="month-tabs" id="monthTabs"></div>
+                    <h3>Översikt</h3>
+                    <div class="view-tabs">
+                        <button class="month-tab active" id="viewTabOverview" onclick="switchView('overview')">📊 Dashboard</button>
+                        <button class="month-tab" id="viewTabExpenses" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
+                    </div>
                 </div>
+
+                <!-- Overview/Dashboard View -->
+                <div id="overviewView">
+                    <div class="month-selector">
+                        <h3>Välj månad</h3>
+                        <div class="month-tabs" id="monthTabs"></div>
+                    </div>
 
                 <div class="income-editor">
                     <h3>✏️ Inkomster för <span id="selectedMonthName"></span></h3>
@@ -304,6 +317,47 @@
                         <canvas id="budgetChart" height="250"></canvas>
                     </div>
                 </div>
+                </div>
+                <!-- End Overview View -->
+
+                <!-- Expenses Management View -->
+                <div id="expensesView" style="display: none;">
+                    <div class="income-editor">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                            <h3>💳 Hantera gemensamma utgifter</h3>
+                            <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px;">
+                                <option value="all">Alla kategorier</option>
+                            </select>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table id="expensesTable" style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                <thead>
+                                    <tr style="background: var(--bg);">
+                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Utgift</th>
+                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Kategori</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jan</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Feb</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Mar</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Apr</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Maj</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jun</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jul</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Aug</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Sep</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Okt</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Nov</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Dec</th>
+                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Totalt</th>
+                                        <th style="padding: 0.75rem; text-align: center; border-bottom: 2px solid var(--border);">Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expensesTableBody"></tbody>
+                            </table>
+                        </div>
+                        <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.85rem;">💡 Klicka på ett belopp för att redigera det</p>
+                    </div>
+                </div>
+                <!-- End Expenses View -->
             </div>
         </div>
     </div>
@@ -412,11 +466,17 @@
                 if (!sheetNames.hanna) miss.push('Hannas');
                 if (!sheetNames.gem) miss.push('Gemensamma');
                 if (miss.length) throw new Error('Saknar ark: ' + miss.join(', ') + '\nHittade: ' + sheets.join(', '));
-                const [kd, hd, gd] = await Promise.all([loadSheet(sheetNames.kalle), loadSheet(sheetNames.hanna), loadSheet(sheetNames.gem)]);
+                
+                // Hämta mer data för utgiftshantering (fler rader)
+                const [kd, hd, gd] = await Promise.all([
+                    loadSheet(sheetNames.kalle), 
+                    loadSheet(sheetNames.hanna), 
+                    loadSheetFull(sheetNames.gem)
+                ]);
                 budgetData = {
                     kalle: {lon: row(kd,0), bidrag: row(kd,1), ovrig: row(kd,2), utgifter: row(kd,7)},
                     hanna: {lon: row(hd,0), bidrag: row(hd,1), ovrig: row(hd,2), utgifter: row(hd,7)},
-                    gem: {utgifter: (gd[1]||[]).slice(2,14).map(v=>parseFloat(v)||0)}
+                    gem: {utgifter: (gd[1]||[]).slice(2,14).map(v=>parseFloat(v)||0), rawData: gd}
                 };
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
@@ -426,6 +486,12 @@
                 alert('Fel: ' + e.message);
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
+        }
+
+        async function loadSheetFull(name) {
+            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(name)}!A1:N100`, {headers: {'Authorization': 'Bearer ' + accessToken}});
+            if (!r.ok) throw new Error('Kunde inte läsa ' + name);
+            return (await r.json()).values || [];
         }
 
         async function loadSheet(name) {
@@ -524,6 +590,86 @@
                 method:'PUT', headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'}, body:JSON.stringify({values:[[val]]})
             });
             if (!r.ok) throw new Error('Kunde inte spara');
+        }
+
+        // === Utgiftshantering ===
+        let currentView = 'overview';
+        let expensesData = [];
+
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('overviewView').style.display = view === 'overview' ? 'block' : 'none';
+            document.getElementById('expensesView').style.display = view === 'expenses' ? 'block' : 'none';
+            document.getElementById('viewTabOverview').classList.toggle('active', view === 'overview');
+            document.getElementById('viewTabExpenses').classList.toggle('active', view === 'expenses');
+            if (view === 'expenses') renderExpensesTable();
+        }
+
+        function renderExpensesTable() {
+            if (!budgetData.gem.rawData) return;
+            const raw = budgetData.gem.rawData;
+            expensesData = [];
+            const categories = new Set();
+            
+            // Parsa utgifter från rad 3 och nedåt (rad 1 = rubriker, rad 2 = summa)
+            for (let i = 2; i < raw.length; i++) {
+                const r = raw[i];
+                if (!r || !r[0] || r[0].trim() === '') continue;
+                const name = r[0] || '';
+                const cat = r[1] || 'Övrigt';
+                const vals = [];
+                for (let m = 2; m <= 13; m++) vals.push(parseFloat(r[m]) || 0);
+                if (vals.some(v => v > 0) || name) {
+                    expensesData.push({ row: i + 1, name, category: cat, values: vals });
+                    categories.add(cat);
+                }
+            }
+
+            // Fyll i kategorifilter
+            const filter = document.getElementById('categoryFilter');
+            const currentVal = filter.value;
+            filter.innerHTML = '<option value="all">Alla kategorier</option>' + 
+                [...categories].sort().map(c => `<option value="${c}">${c}</option>`).join('');
+            filter.value = currentVal || 'all';
+
+            filterExpenses();
+        }
+
+        function filterExpenses() {
+            const cat = document.getElementById('categoryFilter').value;
+            const filtered = cat === 'all' ? expensesData : expensesData.filter(e => e.category === cat);
+            const tbody = document.getElementById('expensesTableBody');
+            
+            tbody.innerHTML = filtered.map(e => {
+                const total = e.values.reduce((a,b) => a+b, 0);
+                const first3 = (e.values[0] + e.values[1] + e.values[2]) / 3;
+                const last3 = (e.values[9] + e.values[10] + e.values[11]) / 3;
+                let trend = '➖';
+                if (last3 > first3 * 1.05) trend = '⬆️';
+                else if (last3 < first3 * 0.95) trend = '⬇️';
+                
+                return `<tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); font-weight: 600;">${e.name}</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); color: var(--text-light);">${e.category}</td>
+                    ${e.values.map((v, m) => `<td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; cursor: pointer;" onclick="editExpense(${e.row}, ${m}, ${v})">${v > 0 ? fmt(v) : '-'}</td>`).join('')}
+                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; font-weight: 600;">${fmt(total)}</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: center;">${trend}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function editExpense(rowNum, monthIdx, currentVal) {
+            const newVal = prompt(`Ange nytt värde för ${monthNamesFull[monthIdx]}:`, currentVal);
+            if (newVal === null) return;
+            const val = parseFloat(newVal) || 0;
+            const col = String.fromCharCode(67 + monthIdx); // C = Jan (index 0)
+            
+            upd(sheetNames.gem, `${col}${rowNum}`, val)
+                .then(() => {
+                    alert('✅ Sparat!');
+                    loadBudgetData(); // Ladda om all data
+                })
+                .catch(e => alert('❌ ' + e.message));
         }
     </script>
 </body>
