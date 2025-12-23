@@ -15,43 +15,64 @@
             --secondary: #4A9B8E;
             --accent: #D4A574;
             --bg: #f5f7fa;
+            --bg-light: #ffffff;
             --text: #1a3a4a;
             --text-light: #6b7c8b;
             --border: #e8eef3;
+            --success: #4A9B8E;
+            --warning: #D4A574;
             --danger: #c74545;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'DM Sans', sans-serif;
             background: linear-gradient(135deg, var(--bg) 0%, #e8eef3 100%);
             color: var(--text);
             min-height: 100vh;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        .header { margin-bottom: 3rem; text-align: center; }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
         h1 {
             font-family: 'Crimson Pro', serif;
             font-size: 3rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
         }
-        .subtitle { font-size: 1.1rem; color: var(--text-light); }
-        .auth-section, .setup-section {
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .auth-section {
             background: white;
             border-radius: 20px;
-            padding: 2rem;
+            padding: 3rem;
+            text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            max-width: 600px;
-            margin: 2rem auto;
+            max-width: 500px;
+            margin: 4rem auto;
         }
-        .auth-section { text-align: center; padding: 3rem; }
-        .setup-section h3, .income-editor h3, .month-selector h3, .chart-card h3 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
+
         .google-btn {
             background: var(--primary);
             color: white;
@@ -61,21 +82,59 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
         }
-        .google-btn:hover { background: var(--primary-light); }
-        .input-group { margin: 1.5rem 0; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+
+        .google-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 90, 123, 0.3);
+        }
+
+        .setup-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .setup-section h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
         .input-group input {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 2px solid var(--border);
             border-radius: 10px;
             font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.3s ease;
         }
-        .input-group input:focus { outline: none; border-color: var(--primary); }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
         .btn {
             background: var(--secondary);
             color: white;
@@ -85,9 +144,52 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .btn:hover { background: #5fb3a4; }
-        .btn-secondary { background: var(--accent); }
+
+        .btn:hover {
+            background: #5fb3a4;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: #e0b888;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .user-info {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
         .logout-btn {
             background: transparent;
             color: var(--text-light);
@@ -96,53 +198,86 @@
             border-radius: 8px;
             font-size: 0.9rem;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
-        .dashboard { display: none; }
-        .dashboard.active { display: block; }
-        .user-info {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+        .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
         }
-        .user-info img { width: 40px; height: 40px; border-radius: 50%; }
-        .user-info .name { font-weight: 600; }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
+
         .stat-card {
             background: white;
             border-radius: 16px;
             padding: 1.5rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
         .stat-card.primary {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
         }
+
         .stat-card.success {
             background: linear-gradient(135deg, var(--secondary) 0%, #5fb3a4 100%);
             color: white;
         }
-        .stat-label { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; margin-bottom: 0.5rem; }
-        .stat-value { font-family: 'Crimson Pro', serif; font-size: 2rem; font-weight: 700; }
-        .stat-detail { font-size: 0.85rem; opacity: 0.8; }
-        .month-selector, .income-editor, .chart-card {
+
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-detail {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .month-selector {
             background: white;
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
-        .month-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .view-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .month-selector h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .month-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
         .month-tab {
             padding: 0.5rem 1rem;
             border: 2px solid var(--border);
@@ -150,38 +285,145 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 0.9rem;
         }
-        .month-tab:hover { border-color: var(--primary); background: var(--bg); }
-        .month-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-        #expensesTable td:hover { background: #e3f2fd; }
+
+        .month-tab:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .month-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .view-tab {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .view-tab:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .view-tab.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .income-editor {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .income-editor h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
         .income-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
+
         .person-section {
             border: 2px solid var(--border);
             border-radius: 12px;
             padding: 1.5rem;
         }
-        .person-section h4 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 700; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.5rem; }
+
+        .person-section h4 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
         .form-group input {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
         }
-        .save-btn { width: 100%; margin-top: 1rem; }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .save-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
         .charts-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 2rem;
+            margin-bottom: 2rem;
         }
-        .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .chart-card h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 300px !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
         .spinner {
             border: 3px solid var(--border);
             border-top: 3px solid var(--primary);
@@ -191,242 +433,545 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 1rem;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; background: #e3f2fd; color: #1976d2; border: 1px solid #90caf9; }
-        .current-config { background: var(--bg); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.9rem; }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border: 1px solid #81c784;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffb74d;
+        }
+
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .stats-grid, .charts-section, .income-grid { grid-template-columns: 1fr; }
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid,
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .income-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .month-tabs {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 Familjebudget 2024</h1>
+            <h1 id="headerTitle">💰 Familjebudget</h1>
             <p class="subtitle">Hanna & Kalle</p>
         </div>
 
+        <!-- Setup Section -->
         <div id="setupSection" class="setup-section">
-            <h3>⚙️ Konfigurera kopplingen till Google Sheets</h3>
-            <div id="currentConfig" class="current-config" style="display: none;">
-                <strong>Nuvarande:</strong> <span id="currentConfigText"></span>
+            <h3>⚙️ Första gången? Konfigurera kopplingen till Google Sheets</h3>
+            <div class="alert alert-info">
+                För att använda denna app behöver ni skapa ett Google Cloud-projekt och hämta ett Client ID.
             </div>
-            <div class="alert">För att använda appen behöver du ett Google Cloud Client ID och Spreadsheet ID.</div>
+            
             <div class="input-group">
                 <label>Google Cloud Client ID:</label>
-                <input type="text" id="clientIdInput" placeholder="123456789-abc.apps.googleusercontent.com">
+                <input type="text" id="clientIdInput" placeholder="123456789-abcdefg.apps.googleusercontent.com">
             </div>
+
             <div class="input-group">
-                <label>Spreadsheet ID (eller hela URL:en):</label>
-                <input type="text" id="spreadsheetIdInput" placeholder="1ABC123...">
+                <label>Budgetfiler per år:</label>
+                <div id="yearsList" style="margin-top: 1rem;"></div>
+                <button class="btn btn-secondary" onclick="addYearConfig()" style="margin-top: 1rem; width: 100%;">
+                    ➕ Lägg till år
+                </button>
             </div>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn" onclick="saveConfig()">Spara</button>
-                <button class="btn btn-secondary" id="backBtn" style="display: none;" onclick="backToLogin()">← Tillbaka</button>
-            </div>
+
+            <button class="btn" onclick="saveConfig()">Spara konfiguration</button>
+
+            <details style="margin-top: 2rem; padding: 1rem; background: var(--bg); border-radius: 10px;">
+                <summary style="cursor: pointer; font-weight: 600; color: var(--primary);">
+                    📖 Steg-för-steg instruktioner
+                </summary>
+                <div style="margin-top: 1rem; line-height: 1.8; color: var(--text-light);">
+                    <h4>1. Skapa Google Cloud-projekt:</h4>
+                    <ol>
+                        <li>Gå till <a href="https://console.cloud.google.com" target="_blank" style="color: var(--primary);">Google Cloud Console</a></li>
+                        <li>Skapa nytt projekt (t.ex. "Familjebudget")</li>
+                        <li>Aktivera <strong>Google Sheets API</strong></li>
+                        <li>Gå till "Credentials" → "Create Credentials" → "OAuth client ID"</li>
+                        <li>Välj "Web application"</li>
+                        <li>Under "Authorized JavaScript origins" lägg till din GitHub Pages URL</li>
+                        <li>Kopiera Client ID</li>
+                        <li>Under "OAuth consent screen" → Välj "Internal" (bara era Workspace-domäner)</li>
+                    </ol>
+
+                    <h4 style="margin-top: 1rem;">2. Skapa budgetfiler per år:</h4>
+                    <ol>
+                        <li>Skapa en Google Sheets-fil per år (t.ex. "Familjebudget 2024", "Familjebudget 2025")</li>
+                        <li>Varje fil ska ha samma flikar: "Gemensamma fasta utgifter", "Kalles fasta utgifter", "Hannas fasta utgifter"</li>
+                        <li>Öppna varje fil och kopiera Spreadsheet ID från URL:en (delen mellan /d/ och /edit)</li>
+                        <li>Lägg till varje år med sitt Spreadsheet ID ovan</li>
+                    </ol>
+                </div>
+            </details>
         </div>
 
+        <!-- Auth Section -->
         <div id="authSection" class="auth-section" style="display: none;">
-            <h2 style="margin-bottom: 1.5rem;">Logga in för att komma åt budgeten</h2>
+            <h2 style="margin-bottom: 1.5rem;">Logga in för att komma åt er budget</h2>
             <button class="google-btn" onclick="handleAuthClick()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
                 Logga in med Google
             </button>
-            <br><br>
-            <button class="logout-btn" onclick="showSetup()">⚙️ Ändra inställningar</button>
         </div>
 
+        <!-- Dashboard -->
         <div id="dashboard" class="dashboard">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <div id="userInfo" class="user-info"></div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="logout-btn" onclick="showSetup()">⚙️</button>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div id="yearSelector" class="month-tabs" style="margin: 0;"></div>
                     <button class="logout-btn" onclick="handleSignoutClick()">Logga ut</button>
                 </div>
             </div>
 
             <div id="loadingIndicator" class="loading">
                 <div class="spinner"></div>
-                <p>Läser från Google Sheets...</p>
+                <p>Läser budget från Google Sheets...</p>
             </div>
 
             <div id="dashboardContent" style="display: none;">
                 <!-- View Tabs -->
                 <div class="month-selector">
                     <h3>Översikt</h3>
-                    <div class="view-tabs">
-                        <button class="month-tab active" id="viewTabOverview" onclick="switchView('overview')">📊 Dashboard</button>
-                        <button class="month-tab" id="viewTabExpenses" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
+                    <div class="month-tabs">
+                        <button class="view-tab active" onclick="switchView('overview')">📊 Dashboard</button>
+                        <button class="view-tab" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
                     </div>
                 </div>
 
-                <!-- Overview/Dashboard View -->
+                <!-- Dashboard View -->
                 <div id="overviewView">
-                    <div class="month-selector">
+                    <!-- Month Selector -->
+                    <div class="month-selector" style="margin-top: 2rem;">
                         <h3>Välj månad</h3>
                         <div class="month-tabs" id="monthTabs"></div>
                     </div>
 
+                <!-- Income Editor -->
                 <div class="income-editor">
-                    <h3>✏️ Inkomster för <span id="selectedMonthName"></span></h3>
+                    <h3>✏️ Uppdatera inkomster för <span id="selectedMonthName"></span></h3>
                     <div class="income-grid">
                         <div class="person-section">
                             <h4>Kalle</h4>
-                            <div class="form-group"><label>Lön</label><input type="number" id="kalleLon"></div>
-                            <div class="form-group"><label>Bidrag</label><input type="number" id="kalleBidrag"></div>
-                            <div class="form-group"><label>Övrig</label><input type="number" id="kalleOvrig"></div>
+                            <div class="form-group">
+                                <label>Lön (kr)</label>
+                                <input type="number" id="kalleLon" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Bidrag (kr)</label>
+                                <input type="number" id="kalleBidrag" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Övrig inkomst (kr)</label>
+                                <input type="number" id="kalleOvrig" placeholder="0">
+                            </div>
                         </div>
+
                         <div class="person-section">
                             <h4>Hanna</h4>
-                            <div class="form-group"><label>Lön</label><input type="number" id="hannaLon"></div>
-                            <div class="form-group"><label>Bidrag</label><input type="number" id="hannaBidrag"></div>
-                            <div class="form-group"><label>Övrig</label><input type="number" id="hannaOvrig"></div>
+                            <div class="form-group">
+                                <label>Lön (kr)</label>
+                                <input type="number" id="hannaLon" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Bidrag (kr)</label>
+                                <input type="number" id="hannaBidrag" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Övrig inkomst (kr)</label>
+                                <input type="number" id="hannaOvrig" placeholder="0">
+                            </div>
                         </div>
                     </div>
-                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara till Google Sheets</button>
+                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara ändringar till Google Sheets</button>
                 </div>
 
+                <!-- Stats -->
                 <div class="stats-grid">
                     <div class="stat-card primary">
-                        <div class="stat-label">Total Inkomst (År)</div>
+                        <div class="stat-label">Total Inkomst (Året)</div>
                         <div class="stat-value" id="totalIncome">0 kr</div>
+                        <div class="stat-detail">Från alla inkomstkällor</div>
                     </div>
+
                     <div class="stat-card">
-                        <div class="stat-label">Totala Utgifter (År)</div>
+                        <div class="stat-label">Totala Utgifter (Året)</div>
                         <div class="stat-value" id="totalExpenses">0 kr</div>
+                        <div class="stat-detail">Gemensamma + Personliga</div>
                     </div>
+
                     <div class="stat-card success">
-                        <div class="stat-label">Sparat (År)</div>
+                        <div class="stat-label">Faktiskt Sparat (Året)</div>
                         <div class="stat-value" id="totalSavings">0 kr</div>
-                        <div class="stat-detail" id="savingsRate">Sparkvot: 0%</div>
+                        <div class="stat-detail" id="savingsRate">Från sparkonton (ISK, fonder, etc)</div>
                     </div>
+
                     <div class="stat-card">
-                        <div class="stat-label">Budget <span id="currentMonthStat"></span></div>
+                        <div class="stat-label">Budget (<span id="currentMonthStat"></span>)</div>
                         <div class="stat-value" id="monthBudget">0 kr</div>
+                        <div class="stat-detail">Inkomst - Utgifter</div>
                     </div>
                 </div>
 
+                <!-- Charts -->
                 <div class="charts-section">
                     <div class="chart-card">
-                        <h3>📈 Inkomst vs Utgift</h3>
-                        <canvas id="incomeChart" height="250"></canvas>
+                        <h3>📈 Inkomster vs Utgifter per Månad</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
                     </div>
+
                     <div class="chart-card">
                         <h3>💰 Månatlig Budget</h3>
-                        <canvas id="budgetChart" height="250"></canvas>
+                        <div class="chart-wrapper">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
                     </div>
                 </div>
-                </div>
-                <!-- End Overview View -->
 
-                <!-- Expenses Management View -->
-                <div id="expensesView" style="display: none;">
-                    <div class="income-editor">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                            <h3>💳 Hantera gemensamma utgifter</h3>
-                            <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px;">
-                                <option value="all">Alla kategorier</option>
-                            </select>
+                <!-- Category Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <h3>🏷️ Utgifter per Kategori</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
                         </div>
-                        <div style="overflow-x: auto;">
-                            <table id="expensesTable" style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                                <thead>
-                                    <tr style="background: var(--bg);">
-                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Utgift</th>
-                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Kategori</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jan</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Feb</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Mar</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Apr</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Maj</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jun</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jul</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Aug</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Sep</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Okt</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Nov</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Dec</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Totalt</th>
-                                        <th style="padding: 0.75rem; text-align: center; border-bottom: 2px solid var(--border);">Trend</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="expensesTableBody"></tbody>
-                            </table>
-                        </div>
-                        <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.85rem;">💡 Klicka på ett belopp för att redigera det</p>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>📊 Kategoriöversikt</h3>
+                        <div id="categoryList" style="max-height: 300px; overflow-y: auto;"></div>
                     </div>
                 </div>
-                <!-- End Expenses View -->
+            </div>
+        </div>
+        </div>
+        <!-- End Dashboard/Overview View -->
+
+        <!-- Expenses Management View -->
+        <div id="expensesView" style="display: none;">
+            <div class="income-editor">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3>💳 Hantera gemensamma utgifter</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+                            <option value="all">Alla kategorier</option>
+                        </select>
+                        <button class="btn" onclick="showAddExpenseModal()" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                            ➕ Lägg till utgift
+                        </button>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <table id="expensesTable" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">
+                                <th style="padding: 1rem 0.75rem; text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--primary); z-index: 2; min-width: 200px;">Utgift</th>
+                                <th style="padding: 1rem 0.75rem; text-align: left; font-weight: 600; min-width: 140px;">Kategori</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jan</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Feb</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Mar</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Apr</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Maj</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jun</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Jul</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Aug</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Sep</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Okt</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Nov</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; min-width: 80px;">Dec</th>
+                                <th style="padding: 1rem 0.5rem; text-align: right; font-weight: 600; background: rgba(255,255,255,0.1); min-width: 100px;">Totalt</th>
+                                <th style="padding: 1rem 0.5rem; text-align: center; font-weight: 600; background: rgba(255,255,255,0.1); min-width: 80px;">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--bg); border-radius: 10px; font-size: 0.9rem; color: var(--text-light);">
+                    💡 <strong>Tips:</strong> Klicka på ett belopp för att redigera det. Ändringar sparas automatiskt till Google Sheets.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <h3 style="font-family: 'Crimson Pro', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem;">
+                ➕ Lägg till ny utgift
+            </h3>
+
+            <div class="form-group">
+                <label>Utgiftens namn *</label>
+                <input type="text" id="newExpenseName" placeholder="t.ex. Disney+" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+            </div>
+
+            <div class="form-group">
+                <label>Kategori *</label>
+                <select id="newExpenseCategory" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+                    <option value="">Välj kategori...</option>
+                    <option value="Lån">Lån</option>
+                    <option value="Boende">Boende</option>
+                    <option value="Sparande">Sparande</option>
+                    <option value="Digitala tjänster">Digitala tjänster</option>
+                    <option value="Barn">Barn</option>
+                    <option value="Försäkringar">Försäkringar</option>
+                    <option value="Abonnemang">Abonnemang</option>
+                    <option value="Medlemskap">Medlemskap</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Typ av kostnad *</label>
+                <select id="newExpenseType" onchange="updateExpenseTypeFields()" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+                    <option value="monthly">Månadskostnad (löpande)</option>
+                    <option value="yearly">Årlig kostnad (en gång/år)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label id="newExpenseAmountLabel">Belopp per månad (kr) *</label>
+                <input type="number" id="newExpenseAmount" placeholder="0" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+            </div>
+
+            <div class="form-group" id="monthlyStartField">
+                <label>Startmånad (första månaden med denna kostnad)</label>
+                <select id="newExpenseStartMonth" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+                    <option value="0">Januari</option>
+                    <option value="1">Februari</option>
+                    <option value="2">Mars</option>
+                    <option value="3">April</option>
+                    <option value="4">Maj</option>
+                    <option value="5">Juni</option>
+                    <option value="6">Juli</option>
+                    <option value="7">Augusti</option>
+                    <option value="8">September</option>
+                    <option value="9">Oktober</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="yearlyMonthField" style="display: none;">
+                <label>Vilken månad debiteras kostnaden?</label>
+                <select id="newExpenseYearlyMonth" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: 'DM Sans', sans-serif;">
+                    <option value="0">Januari</option>
+                    <option value="1">Februari</option>
+                    <option value="2">Mars</option>
+                    <option value="3">April</option>
+                    <option value="4">Maj</option>
+                    <option value="5">Juni</option>
+                    <option value="6">Juli</option>
+                    <option value="7">Augusti</option>
+                    <option value="8">September</option>
+                    <option value="9">Oktober</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn" onclick="saveNewExpense()" style="flex: 1;">💾 Spara</button>
+                <button class="btn btn-secondary" onclick="closeAddExpenseModal()" style="flex: 1;">Avbryt</button>
             </div>
         </div>
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        let tokenClient, accessToken = null, budgetData = null, currentMonth = new Date().getMonth();
-        let incomeChart, budgetChart, sheetNames = {};
-        let CLIENT_ID = localStorage.getItem('googleClientId') || '';
-        let SPREADSHEET_ID = localStorage.getItem('spreadsheetId') || '';
+        let tokenClient;
+        let accessToken = null;
+        let budgetData = null;
+        let currentMonth = 0;
+        let incomeChart, budgetChart, categoryChart;
+        let currentView = 'overview';
+        let expensesData = [];
+        let currentYear = null;
+        let yearConfigs = {}; // { "2024": "spreadsheet_id", "2025": "spreadsheet_id", ... }
+        
+        const CLIENT_ID = window.localStorage.getItem('googleClientId') || '';
+        let SPREADSHEET_ID = ''; // Will be set based on selected year
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
-        const monthNamesFull = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
 
-        window.onload = () => {
-            if (CLIENT_ID && SPREADSHEET_ID) {
+        const monthNames = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
+                           'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
+
+        window.onload = function() {
+            // Load year configurations from localStorage
+            const yearsJson = window.localStorage.getItem('budgetYears');
+            if (yearsJson) {
+                yearConfigs = JSON.parse(yearsJson);
+            }
+            
+            // Load current year selection
+            const savedYear = window.localStorage.getItem('currentBudgetYear');
+            if (savedYear && yearConfigs[savedYear]) {
+                currentYear = savedYear;
+            } else if (Object.keys(yearConfigs).length > 0) {
+                // Default to most recent year
+                currentYear = Object.keys(yearConfigs).sort().reverse()[0];
+            }
+            
+            if (CLIENT_ID && Object.keys(yearConfigs).length > 0) {
+                SPREADSHEET_ID = yearConfigs[currentYear];
                 document.getElementById('setupSection').style.display = 'none';
                 document.getElementById('authSection').style.display = 'block';
                 initGoogleAuth();
+            } else {
+                document.getElementById('setupSection').style.display = 'block';
+                renderYearsList();
             }
         };
 
-        function extractId(input) {
-            const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-            return m ? m[1] : input.split('/')[0].split('?')[0].split('#')[0].trim();
+        function renderYearsList() {
+            const yearsList = document.getElementById('yearsList');
+            const years = Object.keys(yearConfigs).sort();
+            
+            if (years.length === 0) {
+                yearsList.innerHTML = '<p style="color: var(--text-light); font-style: italic;">Inga år konfigurerade ännu. Klicka "Lägg till år" för att börja.</p>';
+                return;
+            }
+            
+            yearsList.innerHTML = years.map(year => `
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center;">
+                    <input type="number" value="${year}" id="year_${year}" placeholder="År (t.ex. 2024)" 
+                           style="width: 120px; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                    <input type="text" value="${yearConfigs[year]}" id="sheet_${year}" placeholder="Spreadsheet ID" 
+                           style="flex: 1; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                    <button onclick="removeYearConfig('${year}')" style="padding: 0.75rem 1rem; background: var(--danger); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        🗑️
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addYearConfig() {
+            const newYear = new Date().getFullYear();
+            let yearToAdd = newYear;
+            
+            // Find next available year
+            while (yearConfigs[yearToAdd]) {
+                yearToAdd++;
+            }
+            
+            yearConfigs[yearToAdd] = '';
+            renderYearsList();
+        }
+
+        function removeYearConfig(year) {
+            if (confirm(`Är du säker på att du vill ta bort ${year}?`)) {
+                delete yearConfigs[year];
+                renderYearsList();
+            }
         }
 
         function saveConfig() {
-            const cid = document.getElementById('clientIdInput').value.trim();
-            let sid = document.getElementById('spreadsheetIdInput').value.trim();
-            if (!cid || !sid) return alert('Fyll i båda fälten');
-            sid = extractId(sid);
-            localStorage.setItem('googleClientId', cid);
-            localStorage.setItem('spreadsheetId', sid);
-            alert('✅ Sparad!\nSpreadsheet ID: ' + sid);
-            location.reload();
-        }
+            const clientId = document.getElementById('clientIdInput').value.trim();
 
-        function showSetup() {
-            const cid = localStorage.getItem('googleClientId') || '';
-            const sid = localStorage.getItem('spreadsheetId') || '';
-            if (cid || sid) {
-                document.getElementById('currentConfig').style.display = 'block';
-                document.getElementById('currentConfigText').textContent = sid;
-                document.getElementById('backBtn').style.display = 'inline-block';
+            if (!clientId) {
+                alert('Vänligen fyll i Client ID');
+                return;
             }
-            document.getElementById('clientIdInput').value = cid;
-            document.getElementById('spreadsheetIdInput').value = sid;
-            document.getElementById('setupSection').style.display = 'block';
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('dashboard').classList.remove('active');
-        }
 
-        function backToLogin() {
-            document.getElementById('setupSection').style.display = 'none';
-            document.getElementById('authSection').style.display = 'block';
+            // Collect all year configurations
+            const newYearConfigs = {};
+            const years = Object.keys(yearConfigs);
+            
+            for (const oldYear of years) {
+                const yearInput = document.getElementById(`year_${oldYear}`);
+                const sheetInput = document.getElementById(`sheet_${oldYear}`);
+                
+                if (yearInput && sheetInput) {
+                    const year = yearInput.value.trim();
+                    const sheetId = sheetInput.value.trim();
+                    
+                    if (year && sheetId) {
+                        newYearConfigs[year] = sheetId;
+                    }
+                }
+            }
+            
+            if (Object.keys(newYearConfigs).length === 0) {
+                alert('Vänligen lägg till minst ett år med Spreadsheet ID');
+                return;
+            }
+
+            window.localStorage.setItem('googleClientId', clientId);
+            window.localStorage.setItem('budgetYears', JSON.stringify(newYearConfigs));
+            
+            // Set current year to most recent
+            const mostRecentYear = Object.keys(newYearConfigs).sort().reverse()[0];
+            window.localStorage.setItem('currentBudgetYear', mostRecentYear);
+            
+            alert('Konfiguration sparad! Laddar om sidan...');
+            window.location.reload();
         }
 
         function initGoogleAuth() {
             tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID, scope: SCOPES,
-                callback: (r) => { accessToken = r.access_token; onAuthSuccess(); }
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (tokenResponse) => {
+                    accessToken = tokenResponse.access_token;
+                    onAuthSuccess();
+                },
             });
         }
 
-        function handleAuthClick() { tokenClient.requestAccessToken(); }
+        function handleAuthClick() {
+            tokenClient.requestAccessToken();
+        }
 
         function handleSignoutClick() {
-            accessToken = budgetData = null;
+            accessToken = null;
+            budgetData = null;
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('authSection').style.display = 'block';
         }
@@ -434,242 +979,711 @@
         async function onAuthSuccess() {
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            try {
-                const u = await (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {headers: {'Authorization': 'Bearer ' + accessToken}})).json();
-                document.getElementById('userInfo').innerHTML = `<img src="${u.picture||''}" alt=""><div><div class="name">${u.name||''}</div><div style="font-size:0.8rem;color:var(--text-light)">${u.email||''}</div></div>`;
-            } catch(e) {}
+            
+            const userInfo = await fetchUserInfo();
+            if (userInfo) {
+                displayUserInfo(userInfo);
+            }
+
             await loadBudgetData();
         }
 
-        async function getSheets() {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa spreadsheet');
-            return (await r.json()).sheets.map(s => s.properties.title);
+        async function fetchUserInfo() {
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+                return null;
+            }
         }
 
-        function findSheet(names, kw) {
-            for (const n of names) { const l = n.toLowerCase(); if (kw.every(k => l.includes(k))) return n; }
-            return null;
+        function displayUserInfo(userInfo) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <img src="${userInfo.picture}" alt="${userInfo.name}">
+                <div>
+                    <div class="name">${userInfo.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light);">${userInfo.email}</div>
+                </div>
+            `;
         }
 
         async function loadBudgetData() {
             try {
                 document.getElementById('loadingIndicator').style.display = 'block';
                 document.getElementById('dashboardContent').style.display = 'none';
-                const sheets = await getSheets();
-                console.log('Ark:', sheets);
-                sheetNames.kalle = findSheet(sheets, ['kalle', 'utgifter']);
-                sheetNames.hanna = findSheet(sheets, ['hanna', 'utgifter']);
-                sheetNames.gem = findSheet(sheets, ['gemensam', 'utgifter']);
-                const miss = [];
-                if (!sheetNames.kalle) miss.push('Kalles');
-                if (!sheetNames.hanna) miss.push('Hannas');
-                if (!sheetNames.gem) miss.push('Gemensamma');
-                if (miss.length) throw new Error('Saknar ark: ' + miss.join(', ') + '\nHittade: ' + sheets.join(', '));
-                
-                // Hämta mer data för utgiftshantering (fler rader)
-                const [kd, hd, gd] = await Promise.all([
-                    loadSheet(sheetNames.kalle), 
-                    loadSheet(sheetNames.hanna), 
-                    loadSheetFull(sheetNames.gem)
+
+                // Load all sheets
+                const [kalleData, hannaData, gemData] = await Promise.all([
+                    loadSheetData('Kalles fasta utgifter'),
+                    loadSheetData('Hannas fasta utgifter'),
+                    loadSheetData('Gemensamma fasta utgifter')
                 ]);
+
                 budgetData = {
-                    kalle: {lon: row(kd,0), bidrag: row(kd,1), ovrig: row(kd,2), utgifter: row(kd,7)},
-                    hanna: {lon: row(hd,0), bidrag: row(hd,1), ovrig: row(hd,2), utgifter: row(hd,7)},
-                    gem: {utgifter: (gd[1]||[]).slice(2,14).map(v=>parseFloat(v)||0), rawData: gd}
+                    kalle: parsePersonData(kalleData),
+                    hanna: parsePersonData(hannaData),
+                    gemeensam: parseGemData(gemData)
                 };
+
+                renderDashboard();
+                
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
-                render();
-            } catch (e) {
-                console.error(e);
-                alert('Fel: ' + e.message);
+
+            } catch (error) {
+                console.error('Error loading budget:', error);
+                alert('Fel vid laddning av budget: ' + error.message);
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
         }
 
-        async function loadSheetFull(name) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(name)}!A1:N100`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa ' + name);
-            return (await r.json()).values || [];
+        async function loadSheetData(sheetName) {
+            const response = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!A1:N65`,
+                { headers: { 'Authorization': 'Bearer ' + accessToken } }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Kunde inte läsa "${sheetName}"`);
+            }
+
+            const data = await response.json();
+            return data.values || [];
         }
 
-        async function loadSheet(name) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(name)}!A1:M20`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa ' + name);
-            return (await r.json()).values || [];
+        function parsePersonData(data) {
+            // Row 1 = Lön (columns B-M = index 1-13 for 12 months)
+            // Row 2 = Bidrag
+            // Row 3 = Övrig inkomst
+            // Row 8 = Summa utgifter
+            return {
+                lon: (data[0] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                bidrag: (data[1] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                ovrig: (data[2] || []).slice(1, 14).map(v => parseFloat(v) || 0),
+                utgifter: (data[7] || []).slice(1, 14).map(v => parseFloat(v) || 0)
+            };
         }
 
-        function row(d, i) { return (d[i]||[]).slice(1,13).map(v=>parseFloat(v)||0); }
+        function parseGemData(data) {
+            // Row 2 = Summa gemensamma utgifter (columns C-N = index 2-14)
+            // Starting from row 8: columns A=name, B=category, C-N=monthly values
+            const categoryTotals = {};
+            expensesData = []; // Reset expenses data
+            
+            // Parse category data starting from row 8
+            for (let i = 7; i < data.length; i++) {
+                const row = data[i];
+                const expenseName = row[0];
+                const category = row[1];
+                
+                if (expenseName && category && typeof category === 'string') {
+                    if (!categoryTotals[category]) {
+                        categoryTotals[category] = 0;
+                    }
+                    
+                    // Collect monthly values
+                    const months = [];
+                    // Sum all 12 months (columns C-N = index 2-13)
+                    for (let monthIdx = 2; monthIdx <= 13; monthIdx++) {
+                        const value = parseFloat(row[monthIdx]) || 0;
+                        categoryTotals[category] += value;
+                        months.push(value);
+                    }
+                    
+                    // Store expense data for table view
+                    expensesData.push({
+                        rowIndex: i + 1, // +1 because Sheets is 1-indexed
+                        name: expenseName,
+                        category: category,
+                        months: months
+                    });
+                }
+            }
+            
+            return {
+                utgifter: (data[1] || []).slice(2, 14).map(v => parseFloat(v) || 0),
+                categories: categoryTotals
+            };
+        }
 
-        function render() {
-            document.getElementById('monthTabs').innerHTML = monthNames.map((m,i) => `<button class="month-tab${i===currentMonth?' active':''}" onclick="selectMonth(${i})">${m}</button>`).join('');
-            loadMonth(currentMonth);
+        function renderDashboard() {
+            // Update header with current year
+            document.getElementById('headerTitle').textContent = `💰 Familjebudget ${currentYear}`;
+            
+            // Render year selector
+            renderYearSelector();
+            
+            // Render month tabs
+            const monthTabsDiv = document.getElementById('monthTabs');
+            monthTabsDiv.innerHTML = monthNames.map((month, idx) => 
+                `<button class="month-tab ${idx === currentMonth ? 'active' : ''}" 
+                         onclick="selectMonth(${idx})">${month}</button>`
+            ).join('');
+
             updateStats();
             renderCharts();
+            loadMonthData(currentMonth);
         }
 
-        function selectMonth(i) {
-            currentMonth = i;
-            document.querySelectorAll('.month-tab').forEach((b,j) => b.classList.toggle('active', i===j));
-            loadMonth(i);
+        function renderYearSelector() {
+            const yearSelectorDiv = document.getElementById('yearSelector');
+            const years = Object.keys(yearConfigs).sort();
+            
+            yearSelectorDiv.innerHTML = years.map(year => 
+                `<button class="month-tab ${year === currentYear ? 'active' : ''}" 
+                         onclick="switchYear('${year}')">${year}</button>`
+            ).join('');
+        }
+
+        async function switchYear(year) {
+            if (currentYear === year) return;
+            
+            currentYear = year;
+            SPREADSHEET_ID = yearConfigs[year];
+            
+            // Update header
+            document.getElementById('headerTitle').textContent = `💰 Familjebudget ${currentYear}`;
+            
+            // Save current year selection
+            window.localStorage.setItem('currentBudgetYear', year);
+            
+            // Update year selector buttons
+            renderYearSelector();
+            
+            // Reload budget data for new year
+            await loadBudgetData();
+        }
+
+        function selectMonth(monthIndex) {
+            currentMonth = monthIndex;
+            
+            // Update month tabs
+            document.querySelectorAll('.month-tab').forEach((tab, idx) => {
+                if (idx === monthIndex) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Load month data and update stats (but don't re-render charts)
+            loadMonthData(currentMonth);
             updateStats();
         }
 
-        function loadMonth(i) {
-            document.getElementById('selectedMonthName').textContent = monthNamesFull[i];
-            document.getElementById('kalleLon').value = budgetData.kalle.lon[i]||0;
-            document.getElementById('kalleBidrag').value = budgetData.kalle.bidrag[i]||0;
-            document.getElementById('kalleOvrig').value = budgetData.kalle.ovrig[i]||0;
-            document.getElementById('hannaLon').value = budgetData.hanna.lon[i]||0;
-            document.getElementById('hannaBidrag').value = budgetData.hanna.bidrag[i]||0;
-            document.getElementById('hannaOvrig').value = budgetData.hanna.ovrig[i]||0;
+        function loadMonthData(monthIndex) {
+            document.getElementById('selectedMonthName').textContent = monthNames[monthIndex];
+            
+            document.getElementById('kalleLon').value = budgetData.kalle.lon[monthIndex] || 0;
+            document.getElementById('kalleBidrag').value = budgetData.kalle.bidrag[monthIndex] || 0;
+            document.getElementById('kalleOvrig').value = budgetData.kalle.ovrig[monthIndex] || 0;
+
+            document.getElementById('hannaLon').value = budgetData.hanna.lon[monthIndex] || 0;
+            document.getElementById('hannaBidrag').value = budgetData.hanna.bidrag[monthIndex] || 0;
+            document.getElementById('hannaOvrig').value = budgetData.hanna.ovrig[monthIndex] || 0;
         }
 
-        function sum(a) { return a.reduce((x,y)=>x+y,0); }
-        function fmt(n) { return Math.round(n).toLocaleString('sv-SE'); }
-
         function updateStats() {
-            const ti = sum(budgetData.kalle.lon)+sum(budgetData.kalle.bidrag)+sum(budgetData.kalle.ovrig)+sum(budgetData.hanna.lon)+sum(budgetData.hanna.bidrag)+sum(budgetData.hanna.ovrig);
-            const te = sum(budgetData.gem.utgifter)+sum(budgetData.kalle.utgifter)+sum(budgetData.hanna.utgifter);
-            const ts = ti - te;
-            const mi = (budgetData.kalle.lon[currentMonth]||0)+(budgetData.kalle.bidrag[currentMonth]||0)+(budgetData.kalle.ovrig[currentMonth]||0)+(budgetData.hanna.lon[currentMonth]||0)+(budgetData.hanna.bidrag[currentMonth]||0)+(budgetData.hanna.ovrig[currentMonth]||0);
-            const me = (budgetData.gem.utgifter[currentMonth]||0)+(budgetData.kalle.utgifter[currentMonth]||0)+(budgetData.hanna.utgifter[currentMonth]||0);
-            document.getElementById('totalIncome').textContent = fmt(ti)+' kr';
-            document.getElementById('totalExpenses').textContent = fmt(te)+' kr';
-            document.getElementById('totalSavings').textContent = fmt(ts)+' kr';
-            document.getElementById('savingsRate').textContent = 'Sparkvot: '+(ti>0?((ts/ti)*100).toFixed(1):0)+'%';
-            document.getElementById('currentMonthStat').textContent = monthNamesFull[currentMonth];
-            document.getElementById('monthBudget').textContent = fmt(mi-me)+' kr';
+            const totalKalleIncome = sum(budgetData.kalle.lon) + sum(budgetData.kalle.bidrag) + sum(budgetData.kalle.ovrig);
+            const totalHannaIncome = sum(budgetData.hanna.lon) + sum(budgetData.hanna.bidrag) + sum(budgetData.hanna.ovrig);
+            const totalIncome = totalKalleIncome + totalHannaIncome;
+
+            const totalGemExpenses = sum(budgetData.gemeensam.utgifter);
+            const totalPersonExpenses = sum(budgetData.kalle.utgifter) + sum(budgetData.hanna.utgifter);
+            const totalExpenses = totalGemExpenses + totalPersonExpenses;
+
+            // Get actual savings from "Sparande" category
+            const actualSavings = budgetData.gemeensam.categories && budgetData.gemeensam.categories['Sparande'] 
+                ? budgetData.gemeensam.categories['Sparande'] 
+                : 0;
+            const savingsRate = totalIncome > 0 ? ((actualSavings / totalIncome) * 100).toFixed(1) : 0;
+
+            const monthIncome = (budgetData.kalle.lon[currentMonth] || 0) + 
+                               (budgetData.kalle.bidrag[currentMonth] || 0) +
+                               (budgetData.kalle.ovrig[currentMonth] || 0) +
+                               (budgetData.hanna.lon[currentMonth] || 0) +
+                               (budgetData.hanna.bidrag[currentMonth] || 0) +
+                               (budgetData.hanna.ovrig[currentMonth] || 0);
+            
+            const monthExpenses = (budgetData.gemeensam.utgifter[currentMonth] || 0) +
+                                 (budgetData.kalle.utgifter[currentMonth] || 0) +
+                                 (budgetData.hanna.utgifter[currentMonth] || 0);
+            
+            const monthBudget = monthIncome - monthExpenses;
+
+            document.getElementById('totalIncome').textContent = formatNumber(totalIncome) + ' kr';
+            document.getElementById('totalExpenses').textContent = formatNumber(totalExpenses) + ' kr';
+            document.getElementById('totalSavings').textContent = formatNumber(actualSavings) + ' kr';
+            document.getElementById('savingsRate').textContent = `Sparkvot: ${savingsRate}% av inkomst`;
+            document.getElementById('currentMonthStat').textContent = monthNames[currentMonth];
+            document.getElementById('monthBudget').textContent = formatNumber(monthBudget) + ' kr';
         }
 
         function renderCharts() {
-            const inc = monthNames.map((_,i)=>(budgetData.kalle.lon[i]||0)+(budgetData.kalle.bidrag[i]||0)+(budgetData.kalle.ovrig[i]||0)+(budgetData.hanna.lon[i]||0)+(budgetData.hanna.bidrag[i]||0)+(budgetData.hanna.ovrig[i]||0));
-            const exp = monthNames.map((_,i)=>(budgetData.gem.utgifter[i]||0)+(budgetData.kalle.utgifter[i]||0)+(budgetData.hanna.utgifter[i]||0));
-            const bud = inc.map((v,i)=>v-exp[i]);
+            const monthlyIncome = monthNames.map((_, idx) => {
+                return (budgetData.kalle.lon[idx] || 0) + 
+                       (budgetData.kalle.bidrag[idx] || 0) +
+                       (budgetData.kalle.ovrig[idx] || 0) +
+                       (budgetData.hanna.lon[idx] || 0) +
+                       (budgetData.hanna.bidrag[idx] || 0) +
+                       (budgetData.hanna.ovrig[idx] || 0);
+            });
+
+            const monthlyExpenses = monthNames.map((_, idx) => {
+                return (budgetData.gemeensam.utgifter[idx] || 0) +
+                       (budgetData.kalle.utgifter[idx] || 0) +
+                       (budgetData.hanna.utgifter[idx] || 0);
+            });
+
+            const monthlyBudget = monthlyIncome.map((income, idx) => income - monthlyExpenses[idx]);
+
+            // Destroy old charts if they exist
             if (incomeChart) incomeChart.destroy();
             if (budgetChart) budgetChart.destroy();
-            incomeChart = new Chart(document.getElementById('incomeChart'), {
+            if (categoryChart) categoryChart.destroy();
+
+            // Income Chart
+            const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+            incomeChart = new Chart(incomeCtx, {
                 type: 'line',
-                data: { labels: monthNames, datasets: [
-                    {label:'Inkomst',data:inc,borderColor:'#2D5A7B',backgroundColor:'rgba(45,90,123,0.1)',tension:0.4,fill:true},
-                    {label:'Utgift',data:exp,borderColor:'#D4A574',backgroundColor:'rgba(212,165,116,0.1)',tension:0.4,fill:true}
-                ]},
-                options: {responsive:true,plugins:{legend:{position:'bottom'}}}
+                data: {
+                    labels: monthNames,
+                    datasets: [
+                        {
+                            label: 'Inkomst',
+                            data: monthlyIncome,
+                            borderColor: '#2D5A7B',
+                            backgroundColor: 'rgba(45, 90, 123, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Utgift',
+                            data: monthlyExpenses,
+                            borderColor: '#D4A574',
+                            backgroundColor: 'rgba(212, 165, 116, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'bottom' }
+                    }
+                }
             });
-            budgetChart = new Chart(document.getElementById('budgetChart'), {
+
+            // Budget Chart
+            const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+            budgetChart = new Chart(budgetCtx, {
                 type: 'bar',
-                data: { labels: monthNames, datasets: [{label:'Budget',data:bud,backgroundColor:bud.map(v=>v>=0?'#4A9B8E':'#c74545'),borderRadius:6}]},
-                options: {responsive:true,plugins:{legend:{display:false}}}
+                data: {
+                    labels: monthNames,
+                    datasets: [{
+                        label: 'Budget',
+                        data: monthlyBudget,
+                        backgroundColor: monthlyBudget.map(v => v >= 0 ? '#4A9B8E' : '#c74545'),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
             });
+
+            // Category Chart
+            if (budgetData.gemeensam.categories) {
+                const categoryData = Object.entries(budgetData.gemeensam.categories)
+                    .sort((a, b) => b[1] - a[1]); // Sort by value descending
+                
+                const categoryColors = [
+                    '#2D5A7B', '#4A9B8E', '#D4A574', '#8FC1A9',
+                    '#C8B8A8', '#E8D5C4', '#3a6d8f', '#5fb3a4'
+                ];
+
+                const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+                categoryChart = new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryData.map(([name, _]) => name),
+                        datasets: [{
+                            data: categoryData.map(([_, value]) => value),
+                            backgroundColor: categoryColors,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                display: true, 
+                                position: 'bottom',
+                                labels: {
+                                    padding: 15,
+                                    font: { size: 11 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.parsed;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return context.label + ': ' + formatNumber(value) + ' kr (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Render category list
+                const categoryListDiv = document.getElementById('categoryList');
+                categoryListDiv.innerHTML = categoryData.map(([category, total], idx) => {
+                    const monthlyAvg = Math.round(total / 12);
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: ${idx % 2 === 0 ? '#f8fafb' : 'white'}; border-radius: 8px; margin-bottom: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--text); margin-bottom: 0.25rem;">
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: ${categoryColors[idx]}; margin-right: 0.5rem;"></span>
+                                    ${category}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-light);">
+                                    ⌀ ${formatNumber(monthlyAvg)} kr/mån
+                                </div>
+                            </div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary); font-family: 'Crimson Pro', serif;">
+                                ${formatNumber(total)} kr
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
 
         async function saveIncomeData() {
             try {
-                budgetData.kalle.lon[currentMonth] = parseFloat(document.getElementById('kalleLon').value)||0;
-                budgetData.kalle.bidrag[currentMonth] = parseFloat(document.getElementById('kalleBidrag').value)||0;
-                budgetData.kalle.ovrig[currentMonth] = parseFloat(document.getElementById('kalleOvrig').value)||0;
-                budgetData.hanna.lon[currentMonth] = parseFloat(document.getElementById('hannaLon').value)||0;
-                budgetData.hanna.bidrag[currentMonth] = parseFloat(document.getElementById('hannaBidrag').value)||0;
-                budgetData.hanna.ovrig[currentMonth] = parseFloat(document.getElementById('hannaOvrig').value)||0;
-                const c = String.fromCharCode(66+currentMonth);
-                await upd(sheetNames.kalle,c+'1',budgetData.kalle.lon[currentMonth]);
-                await upd(sheetNames.kalle,c+'2',budgetData.kalle.bidrag[currentMonth]);
-                await upd(sheetNames.kalle,c+'3',budgetData.kalle.ovrig[currentMonth]);
-                await upd(sheetNames.hanna,c+'1',budgetData.hanna.lon[currentMonth]);
-                await upd(sheetNames.hanna,c+'2',budgetData.hanna.bidrag[currentMonth]);
-                await upd(sheetNames.hanna,c+'3',budgetData.hanna.ovrig[currentMonth]);
-                alert('✅ Sparat!');
+                // Update local data
+                budgetData.kalle.lon[currentMonth] = parseFloat(document.getElementById('kalleLon').value) || 0;
+                budgetData.kalle.bidrag[currentMonth] = parseFloat(document.getElementById('kalleBidrag').value) || 0;
+                budgetData.kalle.ovrig[currentMonth] = parseFloat(document.getElementById('kalleOvrig').value) || 0;
+
+                budgetData.hanna.lon[currentMonth] = parseFloat(document.getElementById('hannaLon').value) || 0;
+                budgetData.hanna.bidrag[currentMonth] = parseFloat(document.getElementById('hannaBidrag').value) || 0;
+                budgetData.hanna.ovrig[currentMonth] = parseFloat(document.getElementById('hannaOvrig').value) || 0;
+
+                // Column letters (B=1, C=2, etc. -> month 0 is column B)
+                const columnLetter = String.fromCharCode(66 + currentMonth); // B is 66
+
+                // Update Kalle's sheet
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}1`, budgetData.kalle.lon[currentMonth]);
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}2`, budgetData.kalle.bidrag[currentMonth]);
+                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}3`, budgetData.kalle.ovrig[currentMonth]);
+
+                // Update Hanna's sheet
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}1`, budgetData.hanna.lon[currentMonth]);
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}2`, budgetData.hanna.bidrag[currentMonth]);
+                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}3`, budgetData.hanna.ovrig[currentMonth]);
+
+                alert('✅ Inkomster sparade till Google Sheets!');
                 updateStats();
                 renderCharts();
-            } catch(e) { alert('❌ '+e.message); }
+
+            } catch (error) {
+                console.error('Error saving:', error);
+                alert('❌ Fel vid sparande: ' + error.message);
+            }
         }
 
-        async function upd(sheet,cell,val) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheet)}!${cell}?valueInputOption=RAW`, {
-                method:'PUT', headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'}, body:JSON.stringify({values:[[val]]})
-            });
-            if (!r.ok) throw new Error('Kunde inte spara');
+        async function updateSheetCell(sheetName, cell, value) {
+            const response = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}!${cell}?valueInputOption=RAW`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        values: [[value]]
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Kunde inte uppdatera ${sheetName}!${cell}`);
+            }
         }
 
-        // === Utgiftshantering ===
-        let currentView = 'overview';
-        let expensesData = [];
+        function sum(arr) {
+            return arr.reduce((a, b) => a + b, 0);
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('sv-SE');
+        }
 
         function switchView(view) {
             currentView = view;
-            document.getElementById('overviewView').style.display = view === 'overview' ? 'block' : 'none';
-            document.getElementById('expensesView').style.display = view === 'expenses' ? 'block' : 'none';
-            document.getElementById('viewTabOverview').classList.toggle('active', view === 'overview');
-            document.getElementById('viewTabExpenses').classList.toggle('active', view === 'expenses');
-            if (view === 'expenses') renderExpensesTable();
+            
+            if (view === 'overview') {
+                document.getElementById('overviewView').style.display = 'block';
+                document.getElementById('expensesView').style.display = 'none';
+            } else if (view === 'expenses') {
+                document.getElementById('overviewView').style.display = 'none';
+                document.getElementById('expensesView').style.display = 'block';
+                renderExpensesTable();
+            }
+            
+            // Update ONLY view tab styling (not month tabs)
+            const viewTabs = document.querySelectorAll('.view-tab');
+            viewTabs.forEach((tab, idx) => {
+                if (idx === 0 && view === 'overview') {
+                    tab.classList.add('active');
+                } else if (idx === 1 && view === 'expenses') {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
         }
 
         function renderExpensesTable() {
-            if (!budgetData.gem.rawData) return;
-            const raw = budgetData.gem.rawData;
-            expensesData = [];
-            const categories = new Set();
+            if (!budgetData || !budgetData.gemeensam) return;
             
-            // Parsa utgifter från rad 3 och nedåt (rad 1 = rubriker, rad 2 = summa)
-            for (let i = 2; i < raw.length; i++) {
-                const r = raw[i];
-                if (!r || !r[0] || r[0].trim() === '') continue;
-                const name = r[0] || '';
-                const cat = r[1] || 'Övrigt';
-                const vals = [];
-                for (let m = 2; m <= 13; m++) vals.push(parseFloat(r[m]) || 0);
-                if (vals.some(v => v > 0) || name) {
-                    expensesData.push({ row: i + 1, name, category: cat, values: vals });
-                    categories.add(cat);
-                }
-            }
-
-            // Fyll i kategorifilter
-            const filter = document.getElementById('categoryFilter');
-            const currentVal = filter.value;
-            filter.innerHTML = '<option value="all">Alla kategorier</option>' + 
-                [...categories].sort().map(c => `<option value="${c}">${c}</option>`).join('');
-            filter.value = currentVal || 'all';
-
-            filterExpenses();
-        }
-
-        function filterExpenses() {
-            const cat = document.getElementById('categoryFilter').value;
-            const filtered = cat === 'all' ? expensesData : expensesData.filter(e => e.category === cat);
             const tbody = document.getElementById('expensesTableBody');
+            const categoryFilter = document.getElementById('categoryFilter');
             
-            tbody.innerHTML = filtered.map(e => {
-                const total = e.values.reduce((a,b) => a+b, 0);
-                const first3 = (e.values[0] + e.values[1] + e.values[2]) / 3;
-                const last3 = (e.values[9] + e.values[10] + e.values[11]) / 3;
-                let trend = '➖';
-                if (last3 > first3 * 1.05) trend = '⬆️';
-                else if (last3 < first3 * 0.95) trend = '⬇️';
+            // Populate category filter if empty
+            if (categoryFilter.options.length === 1) {
+                const categories = new Set();
+                expensesData.forEach(exp => categories.add(exp.category));
+                Array.from(categories).sort().forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoryFilter.appendChild(option);
+                });
+            }
+            
+            // Filter expenses
+            const selectedCategory = categoryFilter.value;
+            const filteredExpenses = selectedCategory === 'all' 
+                ? expensesData 
+                : expensesData.filter(exp => exp.category === selectedCategory);
+            
+            // Sort by category, then by name
+            const sortedExpenses = filteredExpenses.sort((a, b) => {
+                if (a.category !== b.category) {
+                    return a.category.localeCompare(b.category, 'sv');
+                }
+                return a.name.localeCompare(b.name, 'sv');
+            });
+            
+            // Render table rows
+            tbody.innerHTML = sortedExpenses.map((expense, idx) => {
+                const total = expense.months.reduce((sum, val) => sum + val, 0);
+                const trend = calculateTrend(expense.months);
                 
-                return `<tr>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); font-weight: 600;">${e.name}</td>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); color: var(--text-light);">${e.category}</td>
-                    ${e.values.map((v, m) => `<td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; cursor: pointer;" onclick="editExpense(${e.row}, ${m}, ${v})">${v > 0 ? fmt(v) : '-'}</td>`).join('')}
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; font-weight: 600;">${fmt(total)}</td>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: center;">${trend}</td>
-                </tr>`;
+                return `
+                    <tr style="border-bottom: 1px solid var(--border); ${idx % 2 === 0 ? 'background: var(--bg);' : ''}">
+                        <td style="padding: 0.75rem; font-weight: 600; position: sticky; left: 0; background: ${idx % 2 === 0 ? 'var(--bg)' : 'white'}; z-index: 1;">${expense.name}</td>
+                        <td style="padding: 0.75rem;">
+                            <span style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--primary); color: white; border-radius: 12px; font-size: 0.8rem;">
+                                ${expense.category}
+                            </span>
+                        </td>
+                        ${expense.months.map((value, monthIdx) => `
+                            <td style="padding: 0.5rem; text-align: right; cursor: pointer; transition: background 0.2s;" 
+                                onmouseenter="this.style.background='#e3f2fd'" 
+                                onmouseleave="this.style.background='transparent'"
+                                onclick="editExpenseCell(${expense.rowIndex}, ${monthIdx}, ${value}, '${expense.name}', ${monthIdx})">
+                                ${value > 0 ? formatNumber(value) : '-'}
+                            </td>
+                        `).join('')}
+                        <td style="padding: 0.75rem; text-align: right; font-weight: 700; background: var(--bg-light);">
+                            ${formatNumber(total)}
+                        </td>
+                        <td style="padding: 0.75rem; text-align: center; background: var(--bg-light);">
+                            ${trend}
+                        </td>
+                    </tr>
+                `;
             }).join('');
         }
 
-        function editExpense(rowNum, monthIdx, currentVal) {
-            const newVal = prompt(`Ange nytt värde för ${monthNamesFull[monthIdx]}:`, currentVal);
-            if (newVal === null) return;
-            const val = parseFloat(newVal) || 0;
-            const col = String.fromCharCode(67 + monthIdx); // C = Jan (index 0)
+        function calculateTrend(months) {
+            // Simple trend: compare last 3 months avg vs first 3 months avg
+            const first3 = months.slice(0, 3).reduce((sum, val) => sum + val, 0) / 3;
+            const last3 = months.slice(-3).reduce((sum, val) => sum + val, 0) / 3;
             
-            upd(sheetNames.gem, `${col}${rowNum}`, val)
-                .then(() => {
-                    alert('✅ Sparat!');
-                    loadBudgetData(); // Ladda om all data
-                })
-                .catch(e => alert('❌ ' + e.message));
+            if (last3 === 0 && first3 === 0) return '➖';
+            if (first3 === 0) return '⬆️';
+            
+            const change = ((last3 - first3) / first3) * 100;
+            if (Math.abs(change) < 5) return '➖';
+            return change > 0 ? '⬆️' : '⬇️';
+        }
+
+        function filterExpenses() {
+            renderExpensesTable();
+        }
+
+        async function editExpenseCell(rowIndex, monthIndex, currentValue, expenseName, monthIdx) {
+            const monthName = monthNames[monthIdx];
+            const newValue = prompt(
+                `Redigera: ${expenseName}\\n` +
+                `Månad: ${monthName}\\n` +
+                `Nuvarande värde: ${currentValue} kr\\n\\n` +
+                `Ange nytt värde (kr):`,
+                currentValue
+            );
+            
+            if (newValue === null) return; // Cancelled
+            
+            const parsedValue = parseFloat(newValue) || 0;
+            
+            try {
+                // Column letter (C=Jan, D=Feb, etc.)
+                const columnLetter = String.fromCharCode(67 + monthIndex); // C is 67
+                await updateSheetCell('Gemensamma fasta utgifter', `${columnLetter}${rowIndex}`, parsedValue);
+                
+                // Update local data
+                expensesData.find(e => e.rowIndex === rowIndex).months[monthIndex] = parsedValue;
+                
+                // Re-render table
+                renderExpensesTable();
+                
+                // Reload budget data to update dashboard
+                await loadBudgetData();
+                
+                alert('✅ Utgift uppdaterad!');
+            } catch (error) {
+                console.error('Error saving expense:', error);
+                alert('❌ Fel vid sparande: ' + error.message);
+            }
+        }
+
+        function showAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'flex';
+        }
+
+        function closeAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'none';
+            // Clear form
+            document.getElementById('newExpenseName').value = '';
+            document.getElementById('newExpenseCategory').value = '';
+            document.getElementById('newExpenseAmount').value = '';
+            document.getElementById('newExpenseType').value = 'monthly';
+            updateExpenseTypeFields();
+        }
+
+        function updateExpenseTypeFields() {
+            const type = document.getElementById('newExpenseType').value;
+            const yearlyField = document.getElementById('yearlyMonthField');
+            const monthlyStartField = document.getElementById('monthlyStartField');
+            const amountLabel = document.getElementById('newExpenseAmountLabel');
+            
+            if (type === 'yearly') {
+                yearlyField.style.display = 'block';
+                monthlyStartField.style.display = 'none';
+                amountLabel.textContent = 'Årligt belopp (kr) *';
+            } else {
+                yearlyField.style.display = 'none';
+                monthlyStartField.style.display = 'block';
+                amountLabel.textContent = 'Belopp per månad (kr) *';
+            }
+        }
+
+        async function saveNewExpense() {
+            const name = document.getElementById('newExpenseName').value.trim();
+            const category = document.getElementById('newExpenseCategory').value;
+            const amount = parseFloat(document.getElementById('newExpenseAmount').value) || 0;
+            const type = document.getElementById('newExpenseType').value;
+            
+            if (!name || !category || amount <= 0) {
+                alert('❌ Vänligen fyll i alla obligatoriska fält');
+                return;
+            }
+
+            try {
+                // Find next available row in Gemensamma fasta utgifter
+                const sheetData = await loadSheetData('Gemensamma fasta utgifter');
+                let nextRow = 8; // Start from row 8
+                for (let i = 7; i < sheetData.length; i++) {
+                    if (!sheetData[i] || !sheetData[i][0]) {
+                        nextRow = i + 1;
+                        break;
+                    }
+                    nextRow = i + 2;
+                }
+
+                // Prepare monthly values
+                const monthlyValues = [];
+                if (type === 'monthly') {
+                    // Start from selected month, fill rest with amount, before with 0
+                    const startMonth = parseInt(document.getElementById('newExpenseStartMonth').value);
+                    for (let i = 0; i < 12; i++) {
+                        monthlyValues.push(i >= startMonth ? amount : 0);
+                    }
+                } else {
+                    // Yearly - only one month
+                    const yearlyMonth = parseInt(document.getElementById('newExpenseYearlyMonth').value);
+                    for (let i = 0; i < 12; i++) {
+                        monthlyValues.push(i === yearlyMonth ? amount : 0);
+                    }
+                }
+
+                // Build the row data: [Name, Category, Jan, Feb, ..., Dec]
+                const rowData = [name, category, ...monthlyValues];
+
+                // Write to Google Sheets
+                const range = `Gemensamma fasta utgifter!A${nextRow}:N${nextRow}`;
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'Bearer ' + accessToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            values: [rowData]
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Kunde inte lägga till utgift');
+                }
+
+                // Close modal
+                closeAddExpenseModal();
+
+                // Reload data
+                await loadBudgetData();
+                renderExpensesTable();
+
+                alert('✅ Ny utgift tillagd!');
+
+            } catch (error) {
+                console.error('Error adding expense:', error);
+                alert('❌ Fel vid sparande: ' + error.message);
+            }
         }
     </script>
 </body>
