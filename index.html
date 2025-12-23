@@ -795,16 +795,63 @@
             `;
         }
 
+        async function getSheetNames() {
+            const response = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title`,
+                { headers: { 'Authorization': 'Bearer ' + accessToken } }
+            );
+            
+            if (!response.ok) {
+                throw new Error('Kunde inte hämta arknamn från spreadsheet');
+            }
+            
+            const data = await response.json();
+            return data.sheets.map(s => s.properties.title);
+        }
+
+        function findSheetName(sheetNames, searchTerms) {
+            // Hitta ark som innehåller sökorden (case-insensitive)
+            for (const name of sheetNames) {
+                const lowerName = name.toLowerCase();
+                if (searchTerms.every(term => lowerName.includes(term.toLowerCase()))) {
+                    return name;
+                }
+            }
+            return null;
+        }
+
         async function loadBudgetData() {
             try {
                 document.getElementById('loadingIndicator').style.display = 'block';
                 document.getElementById('dashboardContent').style.display = 'none';
 
+                // Hämta faktiska arknamn från spreadsheet
+                const sheetNames = await getSheetNames();
+                console.log('Hittade ark:', sheetNames);
+
+                // Hitta rätt arknamn (flexibel matchning)
+                const kalleSheet = findSheetName(sheetNames, ['kalle', 'utgifter']);
+                const hannaSheet = findSheetName(sheetNames, ['hanna', 'utgifter']);
+                const gemSheet = findSheetName(sheetNames, ['gemensam', 'utgifter']);
+
+                if (!kalleSheet || !hannaSheet || !gemSheet) {
+                    const missing = [];
+                    if (!kalleSheet) missing.push('Kalles utgifter');
+                    if (!hannaSheet) missing.push('Hannas utgifter');
+                    if (!gemSheet) missing.push('Gemensamma utgifter');
+                    throw new Error(`Kunde inte hitta ark: ${missing.join(', ')}\n\nHittade dessa ark: ${sheetNames.join(', ')}`);
+                }
+
+                console.log('Använder ark:', { kalleSheet, hannaSheet, gemSheet });
+
+                // Spara arknamnen för senare användning (t.ex. vid sparande)
+                window.sheetNames = { kalle: kalleSheet, hanna: hannaSheet, gem: gemSheet };
+
                 // Load all sheets
                 const [kalleData, hannaData, gemData] = await Promise.all([
-                    loadSheetData('Kalles fasta utgifter'),
-                    loadSheetData('Hannas fasta utgifter'),
-                    loadSheetData('Gemensamma fasta utgifter')
+                    loadSheetData(kalleSheet),
+                    loadSheetData(hannaSheet),
+                    loadSheetData(gemSheet)
                 ]);
 
                 budgetData = {
@@ -1016,15 +1063,19 @@
                 // Column letters (B=1, C=2, etc. -> month 0 is column B)
                 const columnLetter = String.fromCharCode(66 + currentMonth); // B is 66
 
+                // Använd de dynamiskt hittade arknamnen
+                const kalleSheet = window.sheetNames.kalle;
+                const hannaSheet = window.sheetNames.hanna;
+
                 // Update Kalle's sheet
-                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}1`, budgetData.kalle.lon[currentMonth]);
-                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}2`, budgetData.kalle.bidrag[currentMonth]);
-                await updateSheetCell('Kalles fasta utgifter', `${columnLetter}3`, budgetData.kalle.ovrig[currentMonth]);
+                await updateSheetCell(kalleSheet, `${columnLetter}1`, budgetData.kalle.lon[currentMonth]);
+                await updateSheetCell(kalleSheet, `${columnLetter}2`, budgetData.kalle.bidrag[currentMonth]);
+                await updateSheetCell(kalleSheet, `${columnLetter}3`, budgetData.kalle.ovrig[currentMonth]);
 
                 // Update Hanna's sheet
-                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}1`, budgetData.hanna.lon[currentMonth]);
-                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}2`, budgetData.hanna.bidrag[currentMonth]);
-                await updateSheetCell('Hannas fasta utgifter', `${columnLetter}3`, budgetData.hanna.ovrig[currentMonth]);
+                await updateSheetCell(hannaSheet, `${columnLetter}1`, budgetData.hanna.lon[currentMonth]);
+                await updateSheetCell(hannaSheet, `${columnLetter}2`, budgetData.hanna.bidrag[currentMonth]);
+                await updateSheetCell(hannaSheet, `${columnLetter}3`, budgetData.hanna.ovrig[currentMonth]);
 
                 alert('✅ Inkomster sparade till Google Sheets!');
                 updateStats();
