@@ -179,7 +179,6 @@
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
         }
-        .chart-container { position: relative; height: 280px; }
         .loading { text-align: center; padding: 3rem; color: var(--text-light); }
         .spinner {
             border: 3px solid var(--border);
@@ -298,11 +297,11 @@
                 <div class="charts-section">
                     <div class="chart-card">
                         <h3>📈 Inkomst vs Utgift</h3>
-                        <div class="chart-container"><canvas id="incomeChart"></canvas></div>
+                        <canvas id="incomeChart" height="250"></canvas>
                     </div>
                     <div class="chart-card">
                         <h3>💰 Månatlig Budget</h3>
-                        <div class="chart-container"><canvas id="budgetChart"></canvas></div>
+                        <canvas id="budgetChart" height="250"></canvas>
                     </div>
                 </div>
             </div>
@@ -490,12 +489,12 @@
                     {label:'Inkomst',data:inc,borderColor:'#2D5A7B',backgroundColor:'rgba(45,90,123,0.1)',tension:0.4,fill:true},
                     {label:'Utgift',data:exp,borderColor:'#D4A574',backgroundColor:'rgba(212,165,116,0.1)',tension:0.4,fill:true}
                 ]},
-                options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}
+                options: {responsive:true,plugins:{legend:{position:'bottom'}}}
             });
             budgetChart = new Chart(document.getElementById('budgetChart'), {
                 type: 'bar',
                 data: { labels: monthNames, datasets: [{label:'Budget',data:bud,backgroundColor:bud.map(v=>v>=0?'#4A9B8E':'#c74545'),borderRadius:6}]},
-                options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+                options: {responsive:true,plugins:{legend:{display:false}}}
             });
         }
 
