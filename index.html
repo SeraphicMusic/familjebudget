@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Familjebudget 2024 - Hanna & Kalle</title>
+    <title>Familjebudget - Hanna & Kalle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,6 +19,8 @@
             --text-light: #6b7c8b;
             --border: #e8eef3;
             --danger: #c74545;
+            --success: #4A9B8E;
+            --warning: #e6a23c;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -27,30 +29,39 @@
             color: var(--text);
             min-height: 100vh;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        .header { margin-bottom: 3rem; text-align: center; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+        .header { margin-bottom: 2rem; text-align: center; }
         h1 {
             font-family: 'Crimson Pro', serif;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
-        .subtitle { font-size: 1.1rem; color: var(--text-light); }
-        .auth-section, .setup-section {
+        .subtitle { font-size: 1rem; color: var(--text-light); }
+        
+        .card {
             background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            max-width: 600px;
-            margin: 2rem auto;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
         }
-        .auth-section { text-align: center; padding: 3rem; }
-        .setup-section h3, .income-editor h3, .month-selector h3, .chart-card h3 {
+        .card h3 {
             font-family: 'Crimson Pro', serif;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: var(--primary);
             margin-bottom: 1rem;
+        }
+        
+        .auth-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 500px;
+            margin: 4rem auto;
         }
         .google-btn {
             background: var(--primary);
@@ -66,28 +77,20 @@
             gap: 0.75rem;
         }
         .google-btn:hover { background: var(--primary-light); }
-        .input-group { margin: 1.5rem 0; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .input-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-size: 1rem;
-        }
-        .input-group input:focus { outline: none; border-color: var(--primary); }
+        
         .btn {
             background: var(--secondary);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
         }
-        .btn:hover { background: #5fb3a4; }
-        .btn-secondary { background: var(--accent); }
+        .btn:hover { opacity: 0.9; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        
         .logout-btn {
             background: transparent;
             color: var(--text-light);
@@ -98,89 +101,159 @@
             cursor: pointer;
         }
         .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+        
         .dashboard { display: none; }
         .dashboard.active { display: block; }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
         .user-info {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .user-info img { width: 40px; height: 40px; border-radius: 50%; }
-        .user-info .name { font-weight: 600; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .user-info img { width: 36px; height: 36px; border-radius: 50%; }
+        .user-info .name { font-weight: 600; font-size: 0.95rem; }
+        
+        .year-tabs, .month-tabs, .view-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        }
-        .stat-card.primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-        }
-        .stat-card.success {
-            background: linear-gradient(135deg, var(--secondary) 0%, #5fb3a4 100%);
-            color: white;
-        }
-        .stat-label { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; margin-bottom: 0.5rem; }
-        .stat-value { font-family: 'Crimson Pro', serif; font-size: 2rem; font-weight: 700; }
-        .stat-detail { font-size: 0.85rem; opacity: 0.8; }
-        .month-selector, .income-editor, .chart-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        }
-        .month-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .view-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .month-tab {
+        .tab {
             padding: 0.5rem 1rem;
             border: 2px solid var(--border);
-            background: transparent;
+            background: white;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             font-size: 0.9rem;
+            transition: all 0.2s;
         }
-        .month-tab:hover { border-color: var(--primary); background: var(--bg); }
-        .month-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-        #expensesTable td:hover { background: #e3f2fd; }
-        .income-grid {
+        .tab:hover { border-color: var(--primary); }
+        .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .stat-card.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
+        .stat-card.success { background: linear-gradient(135deg, var(--secondary) 0%, #5fb3a4 100%); color: white; }
+        .stat-card.warning { background: linear-gradient(135deg, var(--accent) 0%, #e0b888 100%); color: white; }
+        .stat-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.25rem; }
+        .stat-value { font-family: 'Crimson Pro', serif; font-size: 1.75rem; font-weight: 700; }
+        .stat-detail { font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem; }
+        
+        .category-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            gap: 1rem;
         }
-        .person-section {
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
+        .category-card {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
         }
-        .person-section h4 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 700; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.5rem; }
-        .form-group input {
-            width: 100%;
+        .category-card.increased { border-left-color: var(--danger); }
+        .category-card.decreased { border-left-color: var(--success); }
+        .category-card.new { border-left-color: var(--warning); }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .category-name { font-weight: 600; font-size: 0.95rem; }
+        .category-trend { font-size: 0.85rem; }
+        .category-amount { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .category-comparison { font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem; }
+        .category-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+        .category-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .insights-list { list-style: none; }
+        .insights-list li {
             padding: 0.75rem;
-            border: 2px solid var(--border);
+            background: var(--bg);
             border-radius: 8px;
-            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
-        .save-btn { width: 100%; margin-top: 1rem; }
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
+        .insight-icon { font-size: 1.25rem; }
+        
+        .rule-bars { margin-top: 1rem; }
+        .rule-bar-item { margin-bottom: 1rem; }
+        .rule-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
         }
+        .rule-bar {
+            height: 24px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .rule-bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            transition: width 0.3s;
+        }
+        .rule-bar-target {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--text);
+        }
+        
+        .cancelled-list { font-size: 0.9rem; }
+        .cancelled-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cancelled-item:last-child { border-bottom: none; }
+        .cancelled-savings { color: var(--success); font-weight: 600; }
+        
         .loading { text-align: center; padding: 3rem; color: var(--text-light); }
         .spinner {
             border: 3px solid var(--border);
@@ -192,336 +265,262 @@
             margin: 0 auto 1rem;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; background: #e3f2fd; color: #1976d2; border: 1px solid #90caf9; }
-        .current-config { background: var(--bg); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.9rem; }
+        
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .expenses-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .expenses-table th, .expenses-table td {
+            padding: 0.6rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        .expenses-table th { background: var(--bg); font-weight: 600; text-align: right; }
+        .expenses-table th:first-child, .expenses-table td:first-child { text-align: left; }
+        .expenses-table td:hover { background: #e3f2fd; cursor: pointer; }
+        
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .stats-grid, .charts-section, .income-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.75rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-grid { grid-template-columns: 1fr; }
+            .charts-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 Familjebudget <span id="headerYear"></span></h1>
+            <h1>💰 Familjebudget <span id="headerYear">2025</span></h1>
             <p class="subtitle">Hanna & Kalle</p>
         </div>
 
-        <div id="setupSection" class="setup-section">
-            <h3>⚙️ Konfigurera kopplingen till Google Sheets</h3>
-            <div id="currentConfig" class="current-config" style="display: none;">
-                <strong>Sparade år:</strong>
-                <div id="savedYearsList" style="margin-top: 0.5rem;"></div>
-            </div>
-            <div class="alert">Lägg till ett eller flera budgetår med tillhörande Spreadsheet ID.</div>
-            <div class="input-group">
-                <label>Google Cloud Client ID:</label>
-                <input type="text" id="clientIdInput" placeholder="123456789-abc.apps.googleusercontent.com">
-            </div>
-            <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
-            <h4 style="margin-bottom: 1rem;">Lägg till budgetår</h4>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-                <div class="input-group" style="margin: 0; flex: 0 0 100px;">
-                    <label>År:</label>
-                    <input type="text" id="yearInput" placeholder="2025" style="text-align: center;">
-                </div>
-                <div class="input-group" style="margin: 0; flex: 1; min-width: 200px;">
-                    <label>Spreadsheet ID (eller URL):</label>
-                    <input type="text" id="spreadsheetIdInput" placeholder="1ABC123...">
-                </div>
-                <button class="btn" onclick="addYear()" style="height: 44px;">+ Lägg till år</button>
-            </div>
-            <div id="yearsListEdit" style="margin-top: 1.5rem;"></div>
-            <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn" onclick="saveConfig()">Spara konfiguration</button>
-                <button class="btn btn-secondary" id="backBtn" style="display: none;" onclick="backToLogin()">← Tillbaka</button>
-            </div>
-        </div>
-
-        <div id="authSection" class="auth-section" style="display: none;">
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section">
             <h2 style="margin-bottom: 1.5rem;">Logga in för att komma åt budgeten</h2>
             <button class="google-btn" onclick="handleAuthClick()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Logga in med Google
             </button>
-            <br><br>
-            <button class="logout-btn" onclick="showSetup()">⚙️ Ändra inställningar</button>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-light);">
+                Kräver åtkomst till Google Sheets
+            </p>
         </div>
 
+        <!-- Dashboard -->
         <div id="dashboard" class="dashboard">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div id="userInfo" class="user-info"></div>
-                    <div id="yearSelector" style="display: flex; gap: 0.5rem;"></div>
+            <div class="top-bar">
+                <div class="user-info">
+                    <div id="userInfo"></div>
+                    <div class="year-tabs" id="yearTabs"></div>
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="logout-btn" onclick="showSetup()">⚙️</button>
-                    <button class="logout-btn" onclick="handleSignoutClick()">Logga ut</button>
-                </div>
+                <button class="logout-btn" onclick="handleSignoutClick()">Logga ut</button>
             </div>
 
             <div id="loadingIndicator" class="loading">
                 <div class="spinner"></div>
-                <p>Läser från Google Sheets...</p>
+                <p>Läser budget från Google Sheets...</p>
             </div>
 
             <div id="dashboardContent" style="display: none;">
                 <!-- View Tabs -->
-                <div class="month-selector">
-                    <h3>Översikt</h3>
-                    <div class="view-tabs">
-                        <button class="month-tab active" id="viewTabOverview" onclick="switchView('overview')">📊 Dashboard</button>
-                        <button class="month-tab" id="viewTabExpenses" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
-                    </div>
-                </div>
-
-                <!-- Overview/Dashboard View -->
-                <div id="overviewView">
-                    <div class="month-selector">
-                        <h3>Välj månad</h3>
+                <div class="card" style="padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div class="view-tabs">
+                            <button class="tab active" id="viewDashboard" onclick="switchView('dashboard')">📊 Dashboard</button>
+                            <button class="tab" id="viewExpenses" onclick="switchView('expenses')">✏️ Hantera utgifter</button>
+                        </div>
                         <div class="month-tabs" id="monthTabs"></div>
                     </div>
+                </div>
 
-                <div class="income-editor">
-                    <h3>✏️ Inkomster för <span id="selectedMonthName"></span></h3>
-                    <div class="income-grid">
-                        <div class="person-section">
-                            <h4>Kalle</h4>
-                            <div class="form-group"><label>Lön</label><input type="number" id="kalleLon"></div>
-                            <div class="form-group"><label>Bidrag</label><input type="number" id="kalleBidrag"></div>
-                            <div class="form-group"><label>Övrig</label><input type="number" id="kalleOvrig"></div>
+                <!-- Dashboard View -->
+                <div id="dashboardView">
+                    <!-- KPI Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-label">Inkomst</div>
+                            <div class="stat-value" id="monthIncome">0 kr</div>
+                            <div class="stat-detail" id="monthIncomeYoY"></div>
                         </div>
-                        <div class="person-section">
-                            <h4>Hanna</h4>
-                            <div class="form-group"><label>Lön</label><input type="number" id="hannaLon"></div>
-                            <div class="form-group"><label>Bidrag</label><input type="number" id="hannaBidrag"></div>
-                            <div class="form-group"><label>Övrig</label><input type="number" id="hannaOvrig"></div>
+                        <div class="stat-card">
+                            <div class="stat-label">Utgifter</div>
+                            <div class="stat-value" id="monthExpenses">0 kr</div>
+                            <div class="stat-detail" id="monthExpensesYoY"></div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-label">Sparande</div>
+                            <div class="stat-value" id="monthSavings">0 kr</div>
+                            <div class="stat-detail" id="savingsRate"></div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-label">Budget kvar</div>
+                            <div class="stat-value" id="monthBudget">0 kr</div>
+                            <div class="stat-detail" id="budgetPercent"></div>
                         </div>
                     </div>
-                    <button class="btn save-btn" onclick="saveIncomeData()">💾 Spara till Google Sheets</button>
+
+                    <!-- 50/30/20 Rule + Housing -->
+                    <div class="charts-row">
+                        <div class="card">
+                            <h3>📏 50/30/20-regeln (<span id="ruleMonth"></span>)</h3>
+                            <div class="rule-bars">
+                                <div class="rule-bar-item">
+                                    <div class="rule-bar-label">
+                                        <span>🏠 Behov (mål: 50%)</span>
+                                        <span id="needsPercent">0%</span>
+                                    </div>
+                                    <div class="rule-bar">
+                                        <div class="rule-bar-fill" id="needsBar" style="width: 0%; background: var(--primary);"></div>
+                                        <div class="rule-bar-target" style="left: 50%;"></div>
+                                    </div>
+                                </div>
+                                <div class="rule-bar-item">
+                                    <div class="rule-bar-label">
+                                        <span>🎮 Önskemål (mål: 30%)</span>
+                                        <span id="wantsPercent">0%</span>
+                                    </div>
+                                    <div class="rule-bar">
+                                        <div class="rule-bar-fill" id="wantsBar" style="width: 0%; background: var(--accent);"></div>
+                                        <div class="rule-bar-target" style="left: 30%;"></div>
+                                    </div>
+                                </div>
+                                <div class="rule-bar-item">
+                                    <div class="rule-bar-label">
+                                        <span>💰 Sparande (mål: 20%)</span>
+                                        <span id="savingsPercent">0%</span>
+                                    </div>
+                                    <div class="rule-bar">
+                                        <div class="rule-bar-fill" id="savingsBar" style="width: 0%; background: var(--secondary);"></div>
+                                        <div class="rule-bar-target" style="left: 20%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>💡 Insikter</h3>
+                            <ul class="insights-list" id="insightsList"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Category Breakdown -->
+                    <div class="card">
+                        <h3>📂 Utgifter per kategori - <span id="categoryMonth"></span></h3>
+                        <div class="category-grid" id="categoryGrid"></div>
+                    </div>
+
+                    <!-- Cancelled Services -->
+                    <div class="card" id="cancelledCard" style="display: none;">
+                        <h3>✂️ Uppsagda tjänster (jämfört med förra året)</h3>
+                        <div class="cancelled-list" id="cancelledList"></div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-row">
+                        <div class="card">
+                            <h3>📈 Inkomst vs Utgifter</h3>
+                            <canvas id="incomeChart" height="250"></canvas>
+                        </div>
+                        <div class="card">
+                            <h3>📊 Kategorier över tid</h3>
+                            <canvas id="categoryChart" height="250"></canvas>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-card primary">
-                        <div class="stat-label">Total Inkomst (År)</div>
-                        <div class="stat-value" id="totalIncome">0 kr</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Totala Utgifter (År)</div>
-                        <div class="stat-value" id="totalExpenses">0 kr</div>
-                    </div>
-                    <div class="stat-card success">
-                        <div class="stat-label">Sparat (År)</div>
-                        <div class="stat-value" id="totalSavings">0 kr</div>
-                        <div class="stat-detail" id="savingsRate">Sparkvot: 0%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Budget <span id="currentMonthStat"></span></div>
-                        <div class="stat-value" id="monthBudget">0 kr</div>
-                    </div>
-                </div>
-
-                <div class="charts-section">
-                    <div class="chart-card">
-                        <h3>📈 Inkomst vs Utgift</h3>
-                        <canvas id="incomeChart" height="250"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3>💰 Månatlig Budget</h3>
-                        <canvas id="budgetChart" height="250"></canvas>
-                    </div>
-                </div>
-                </div>
-                <!-- End Overview View -->
-
-                <!-- Expenses Management View -->
+                <!-- Expenses View -->
                 <div id="expensesView" style="display: none;">
-                    <div class="income-editor">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                            <h3>💳 Hantera gemensamma utgifter</h3>
-                            <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px;">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                            <h3 style="margin: 0;">💳 Gemensamma utgifter</h3>
+                            <select id="categoryFilter" onchange="filterExpenses()" style="padding: 0.5rem; border: 2px solid var(--border); border-radius: 8px;">
                                 <option value="all">Alla kategorier</option>
                             </select>
                         </div>
                         <div style="overflow-x: auto;">
-                            <table id="expensesTable" style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                            <table class="expenses-table" id="expensesTable">
                                 <thead>
-                                    <tr style="background: var(--bg);">
-                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Utgift</th>
-                                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">Kategori</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jan</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Feb</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Mar</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Apr</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Maj</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jun</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Jul</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Aug</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Sep</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Okt</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Nov</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Dec</th>
-                                        <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border);">Totalt</th>
-                                        <th style="padding: 0.75rem; text-align: center; border-bottom: 2px solid var(--border);">Trend</th>
+                                    <tr>
+                                        <th style="min-width: 150px;">Utgift</th>
+                                        <th>Kategori</th>
+                                        <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Maj</th><th>Jun</th>
+                                        <th>Jul</th><th>Aug</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Dec</th>
+                                        <th>Totalt</th><th>Trend</th>
                                     </tr>
                                 </thead>
                                 <tbody id="expensesTableBody"></tbody>
                             </table>
                         </div>
-                        <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.85rem;">💡 Klicka på ett belopp för att redigera det</p>
+                        <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.85rem;">💡 Klicka på ett belopp för att redigera</p>
                     </div>
                 </div>
-                <!-- End Expenses View -->
             </div>
         </div>
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        let tokenClient, accessToken = null, budgetData = null, currentMonth = new Date().getMonth();
-        let incomeChart, budgetChart, sheetNames = {};
-        let CLIENT_ID = localStorage.getItem('googleClientId') || '';
-        let SPREADSHEET_ID = '';
-        let yearsConfig = JSON.parse(localStorage.getItem('yearsConfig') || '[]');
-        let currentYear = localStorage.getItem('currentYear') || '';
+        // === HÅRDKODAD KONFIGURATION ===
+        const CLIENT_ID = localStorage.getItem('googleClientId') || '';
+        const YEARS_CONFIG = {
+            '2024': '1eE5meE1y5NGWcq97ArSkm7V2J7d0wgRjHj65Yj3Kdjk',
+            '2025': '19_9ohRPppbrKkVjprpQSeUArSctIJzvBFVEegMHITP4',
+            '2026': '19rDl4D4XKDIFVpNoX3C0b-jbxikm6M9QQimKNduTgvY'
+        };
+        
+        // Kategorier för 50/30/20-regeln
+        const NEEDS_CATEGORIES = ['Boende', 'Försäkring', 'Transport', 'Mat', 'Hälsa'];
+        const WANTS_CATEGORIES = ['Digitala tjänster', 'Nöje', 'Shopping', 'Restaurang', 'Övrigt'];
+        const SAVINGS_CATEGORIES = ['Sparande'];
+        
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
-        const monthNamesFull = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+        const MONTHS_FULL = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'];
+
+        let tokenClient, accessToken = null;
+        let currentYear = '2025';
+        let currentMonth = new Date().getMonth();
+        let currentView = 'dashboard';
+        let allYearsData = {};
+        let sheetNames = {};
+        let incomeChart, categoryChart;
 
         window.onload = () => {
-            // Migrera gammal config om den finns
-            const oldSpreadsheetId = localStorage.getItem('spreadsheetId');
-            if (oldSpreadsheetId && yearsConfig.length === 0) {
-                yearsConfig = [{ year: '2024', spreadsheetId: oldSpreadsheetId }];
-                localStorage.setItem('yearsConfig', JSON.stringify(yearsConfig));
-                localStorage.removeItem('spreadsheetId');
-            }
-            
-            if (CLIENT_ID && yearsConfig.length > 0) {
-                // Välj senaste året som default
-                if (!currentYear || !yearsConfig.find(y => y.year === currentYear)) {
-                    currentYear = yearsConfig[yearsConfig.length - 1].year;
-                    localStorage.setItem('currentYear', currentYear);
+            // Check for stored client ID or prompt
+            if (!CLIENT_ID) {
+                const id = prompt('Ange ditt Google Cloud Client ID:');
+                if (id) {
+                    localStorage.setItem('googleClientId', id);
+                    location.reload();
                 }
-                SPREADSHEET_ID = yearsConfig.find(y => y.year === currentYear)?.spreadsheetId || '';
-                
-                document.getElementById('setupSection').style.display = 'none';
-                document.getElementById('authSection').style.display = 'block';
-                initGoogleAuth();
+                return;
             }
+            initGoogleAuth();
         };
-
-        function extractId(input) {
-            const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-            return m ? m[1] : input.split('/')[0].split('?')[0].split('#')[0].trim();
-        }
-
-        function addYear() {
-            const year = document.getElementById('yearInput').value.trim();
-            const sid = document.getElementById('spreadsheetIdInput').value.trim();
-            
-            if (!year || !sid) {
-                alert('Fyll i både år och Spreadsheet ID');
-                return;
-            }
-            
-            const spreadsheetId = extractId(sid);
-            
-            // Kolla om året redan finns
-            const existing = yearsConfig.findIndex(y => y.year === year);
-            if (existing >= 0) {
-                yearsConfig[existing].spreadsheetId = spreadsheetId;
-            } else {
-                yearsConfig.push({ year, spreadsheetId });
-            }
-            
-            // Sortera efter år
-            yearsConfig.sort((a, b) => a.year.localeCompare(b.year));
-            
-            // Rensa inputfälten
-            document.getElementById('yearInput').value = '';
-            document.getElementById('spreadsheetIdInput').value = '';
-            
-            renderYearsListEdit();
-        }
-
-        function removeYear(year) {
-            if (!confirm(`Ta bort ${year}?`)) return;
-            yearsConfig = yearsConfig.filter(y => y.year !== year);
-            renderYearsListEdit();
-        }
-
-        function renderYearsListEdit() {
-            const container = document.getElementById('yearsListEdit');
-            if (yearsConfig.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-light);">Inga år tillagda ännu.</p>';
-                return;
-            }
-            
-            container.innerHTML = '<strong>Tillagda år:</strong>' + yearsConfig.map(y => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; margin-top: 0.5rem; background: var(--bg); border-radius: 8px;">
-                    <span><strong>${y.year}</strong> - ${y.spreadsheetId.substring(0, 20)}...</span>
-                    <button onclick="removeYear('${y.year}')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem;">✕</button>
-                </div>
-            `).join('');
-        }
-
-        function saveConfig() {
-            const cid = document.getElementById('clientIdInput').value.trim();
-            
-            if (!cid) {
-                alert('Fyll i Client ID');
-                return;
-            }
-            
-            if (yearsConfig.length === 0) {
-                alert('Lägg till minst ett budgetår');
-                return;
-            }
-            
-            localStorage.setItem('googleClientId', cid);
-            localStorage.setItem('yearsConfig', JSON.stringify(yearsConfig));
-            
-            alert('✅ Konfiguration sparad!\n\nÅr: ' + yearsConfig.map(y => y.year).join(', '));
-            location.reload();
-        }
-
-        function showSetup() {
-            const cid = localStorage.getItem('googleClientId') || '';
-            
-            if (yearsConfig.length > 0) {
-                document.getElementById('currentConfig').style.display = 'block';
-                document.getElementById('savedYearsList').innerHTML = yearsConfig.map(y => 
-                    `<div style="margin: 0.25rem 0;"><strong>${y.year}</strong>: ${y.spreadsheetId.substring(0, 25)}...</div>`
-                ).join('');
-                document.getElementById('backBtn').style.display = 'inline-block';
-            }
-            
-            document.getElementById('clientIdInput').value = cid;
-            renderYearsListEdit();
-            
-            document.getElementById('setupSection').style.display = 'block';
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('dashboard').classList.remove('active');
-        }
-
-        function backToLogin() {
-            document.getElementById('setupSection').style.display = 'none';
-            document.getElementById('authSection').style.display = 'block';
-        }
 
         function initGoogleAuth() {
             tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID, scope: SCOPES,
-                callback: (r) => { accessToken = r.access_token; onAuthSuccess(); }
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (r) => { 
+                    accessToken = r.access_token; 
+                    onAuthSuccess(); 
+                }
             });
         }
 
         function handleAuthClick() { tokenClient.requestAccessToken(); }
 
         function handleSignoutClick() {
-            accessToken = budgetData = null;
+            accessToken = null;
+            allYearsData = {};
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('authSection').style.display = 'block';
         }
@@ -529,268 +528,544 @@
         async function onAuthSuccess() {
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
+            
             try {
-                const u = await (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {headers: {'Authorization': 'Bearer ' + accessToken}})).json();
-                document.getElementById('userInfo').innerHTML = `<img src="${u.picture||''}" alt=""><div><div class="name">${u.name||''}</div><div style="font-size:0.8rem;color:var(--text-light)">${u.email||''}</div></div>`;
+                const u = await (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+                    headers: {'Authorization': 'Bearer ' + accessToken}
+                })).json();
+                document.getElementById('userInfo').innerHTML = `
+                    <img src="${u.picture||''}" alt="">
+                    <span class="name">${u.name||''}</span>
+                `;
             } catch(e) {}
-            await loadBudgetData();
+
+            await loadAllYearsData();
         }
 
-        async function getSheets() {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa spreadsheet');
-            return (await r.json()).sheets.map(s => s.properties.title);
-        }
+        async function loadAllYearsData() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
 
-        function findSheet(names, kw) {
-            for (const n of names) { const l = n.toLowerCase(); if (kw.every(k => l.includes(k))) return n; }
-            return null;
-        }
-
-        async function loadBudgetData() {
             try {
-                document.getElementById('loadingIndicator').style.display = 'block';
-                document.getElementById('dashboardContent').style.display = 'none';
-                const sheets = await getSheets();
-                console.log('Ark:', sheets);
-                sheetNames.kalle = findSheet(sheets, ['kalle', 'utgifter']);
-                sheetNames.hanna = findSheet(sheets, ['hanna', 'utgifter']);
-                sheetNames.gem = findSheet(sheets, ['gemensam', 'utgifter']);
-                const miss = [];
-                if (!sheetNames.kalle) miss.push('Kalles');
-                if (!sheetNames.hanna) miss.push('Hannas');
-                if (!sheetNames.gem) miss.push('Gemensamma');
-                if (miss.length) throw new Error('Saknar ark: ' + miss.join(', ') + '\nHittade: ' + sheets.join(', '));
+                // Ladda data för alla år parallellt
+                const years = Object.keys(YEARS_CONFIG);
+                const promises = years.map(year => loadYearData(year));
+                const results = await Promise.all(promises);
                 
-                // Hämta mer data för utgiftshantering (fler rader)
-                const [kd, hd, gd] = await Promise.all([
-                    loadSheet(sheetNames.kalle), 
-                    loadSheet(sheetNames.hanna), 
-                    loadSheetFull(sheetNames.gem)
-                ]);
-                budgetData = {
-                    kalle: {lon: row(kd,0), bidrag: row(kd,1), ovrig: row(kd,2), utgifter: row(kd,7)},
-                    hanna: {lon: row(hd,0), bidrag: row(hd,1), ovrig: row(hd,2), utgifter: row(hd,7)},
-                    gem: {utgifter: (gd[1]||[]).slice(2,14).map(v=>parseFloat(v)||0), rawData: gd}
-                };
+                years.forEach((year, i) => {
+                    allYearsData[year] = results[i];
+                });
+
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
+                
+                renderYearTabs();
                 render();
             } catch (e) {
-                console.error(e);
-                alert('Fel: ' + e.message);
+                console.error('Error:', e);
+                alert('Fel vid laddning: ' + e.message);
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
         }
 
-        async function loadSheetFull(name) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(name)}!A1:N100`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa ' + name);
-            return (await r.json()).values || [];
-        }
-
-        async function loadSheet(name) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(name)}!A1:M20`, {headers: {'Authorization': 'Bearer ' + accessToken}});
-            if (!r.ok) throw new Error('Kunde inte läsa ' + name);
-            return (await r.json()).values || [];
-        }
-
-        function row(d, i) { return (d[i]||[]).slice(1,13).map(v=>parseFloat(v)||0); }
-
-        function render() {
-            // Uppdatera titel med aktuellt år
-            document.getElementById('headerYear').textContent = currentYear;
+        async function loadYearData(year) {
+            const spreadsheetId = YEARS_CONFIG[year];
             
-            // Rendera årsväljare
-            renderYearSelector();
-            
-            document.getElementById('monthTabs').innerHTML = monthNames.map((m,i) => `<button class="month-tab${i===currentMonth?' active':''}" onclick="selectMonth(${i})">${m}</button>`).join('');
-            loadMonth(currentMonth);
-            updateStats();
-            renderCharts();
-        }
+            try {
+                // Hämta arknamn
+                const sheetsResp = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?fields=sheets.properties.title`,
+                    { headers: { 'Authorization': 'Bearer ' + accessToken } }
+                );
+                if (!sheetsResp.ok) throw new Error(`Kunde inte läsa ${year}`);
+                const sheetsData = await sheetsResp.json();
+                const sheetTitles = sheetsData.sheets.map(s => s.properties.title);
 
-        function renderYearSelector() {
-            const container = document.getElementById('yearSelector');
-            if (yearsConfig.length <= 1) {
-                container.innerHTML = yearsConfig.length === 1 ? `<span style="font-weight: 600; color: var(--primary);">📅 ${currentYear}</span>` : '';
-                return;
+                const findSheet = (keywords) => {
+                    for (const name of sheetTitles) {
+                        if (keywords.every(k => name.toLowerCase().includes(k.toLowerCase()))) return name;
+                    }
+                    return null;
+                };
+
+                const kalleSheet = findSheet(['kalle', 'utgifter']);
+                const hannaSheet = findSheet(['hanna', 'utgifter']);
+                const gemSheet = findSheet(['gemensam', 'utgifter']);
+
+                if (!kalleSheet || !hannaSheet || !gemSheet) {
+                    console.warn(`Saknar ark för ${year}`);
+                    return null;
+                }
+
+                // Ladda all data
+                const [kalleData, hannaData, gemData] = await Promise.all([
+                    loadSheet(spreadsheetId, kalleSheet),
+                    loadSheet(spreadsheetId, hannaSheet),
+                    loadSheet(spreadsheetId, gemSheet, 100)
+                ]);
+
+                // Parsa kategorier och utgifter
+                const categories = {};
+                const expenses = [];
+                
+                for (let i = 2; i < gemData.length; i++) {
+                    const row = gemData[i];
+                    if (!row || !row[0]) continue;
+                    
+                    const name = row[0].trim();
+                    const category = (row[1] || 'Övrigt').trim();
+                    const values = [];
+                    
+                    for (let m = 2; m <= 13; m++) {
+                        values.push(parseFloat(row[m]) || 0);
+                    }
+                    
+                    if (name && values.some(v => v > 0)) {
+                        expenses.push({ row: i + 1, name, category, values });
+                        
+                        if (!categories[category]) categories[category] = Array(12).fill(0);
+                        values.forEach((v, m) => categories[category][m] += v);
+                    }
+                }
+
+                return {
+                    spreadsheetId,
+                    sheets: { kalle: kalleSheet, hanna: hannaSheet, gem: gemSheet },
+                    kalle: {
+                        lon: parseRow(kalleData[0]),
+                        bidrag: parseRow(kalleData[1]),
+                        ovrig: parseRow(kalleData[2]),
+                        utgifter: parseRow(kalleData[7])
+                    },
+                    hanna: {
+                        lon: parseRow(hannaData[0]),
+                        bidrag: parseRow(hannaData[1]),
+                        ovrig: parseRow(hannaData[2]),
+                        utgifter: parseRow(hannaData[7])
+                    },
+                    gemUtgifter: parseRow(gemData[1], 2),
+                    categories,
+                    expenses,
+                    rawGemData: gemData
+                };
+            } catch (e) {
+                console.error(`Error loading ${year}:`, e);
+                return null;
             }
-            
-            container.innerHTML = yearsConfig.map(y => `
-                <button class="month-tab ${y.year === currentYear ? 'active' : ''}" onclick="switchYear('${y.year}')">${y.year}</button>
-            `).join('');
+        }
+
+        async function loadSheet(spreadsheetId, sheetName, rows = 20) {
+            const resp = await fetch(
+                `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(sheetName)}!A1:N${rows}`,
+                { headers: { 'Authorization': 'Bearer ' + accessToken } }
+            );
+            if (!resp.ok) throw new Error(`Kunde inte läsa ${sheetName}`);
+            return (await resp.json()).values || [];
+        }
+
+        function parseRow(row, startCol = 1) {
+            if (!row) return Array(12).fill(0);
+            return row.slice(startCol, startCol + 12).map(v => parseFloat(v) || 0);
+        }
+
+        function renderYearTabs() {
+            const container = document.getElementById('yearTabs');
+            container.innerHTML = Object.keys(YEARS_CONFIG).map(year => 
+                `<button class="tab ${year === currentYear ? 'active' : ''}" onclick="switchYear('${year}')">${year}</button>`
+            ).join('');
         }
 
         function switchYear(year) {
-            if (year === currentYear) return;
             currentYear = year;
-            localStorage.setItem('currentYear', year);
-            SPREADSHEET_ID = yearsConfig.find(y => y.year === year)?.spreadsheetId || '';
-            loadBudgetData();
+            document.querySelectorAll('#yearTabs .tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`#yearTabs .tab[onclick*="${year}"]`).classList.add('active');
+            render();
+        }
+
+        function render() {
+            document.getElementById('headerYear').textContent = currentYear;
+            
+            // Month tabs
+            document.getElementById('monthTabs').innerHTML = MONTHS.map((m, i) => 
+                `<button class="tab ${i === currentMonth ? 'active' : ''}" onclick="selectMonth(${i})">${m}</button>`
+            ).join('');
+
+            if (currentView === 'dashboard') {
+                renderDashboard();
+            } else {
+                renderExpenses();
+            }
         }
 
         function selectMonth(i) {
             currentMonth = i;
-            document.querySelectorAll('#monthTabs .month-tab').forEach((b,j) => b.classList.toggle('active', i===j));
-            loadMonth(i);
-            updateStats();
+            document.querySelectorAll('#monthTabs .tab').forEach((t, j) => t.classList.toggle('active', i === j));
+            render();
         }
-
-        function loadMonth(i) {
-            document.getElementById('selectedMonthName').textContent = monthNamesFull[i];
-            document.getElementById('kalleLon').value = budgetData.kalle.lon[i]||0;
-            document.getElementById('kalleBidrag').value = budgetData.kalle.bidrag[i]||0;
-            document.getElementById('kalleOvrig').value = budgetData.kalle.ovrig[i]||0;
-            document.getElementById('hannaLon').value = budgetData.hanna.lon[i]||0;
-            document.getElementById('hannaBidrag').value = budgetData.hanna.bidrag[i]||0;
-            document.getElementById('hannaOvrig').value = budgetData.hanna.ovrig[i]||0;
-        }
-
-        function sum(a) { return a.reduce((x,y)=>x+y,0); }
-        function fmt(n) { return Math.round(n).toLocaleString('sv-SE'); }
-
-        function updateStats() {
-            const ti = sum(budgetData.kalle.lon)+sum(budgetData.kalle.bidrag)+sum(budgetData.kalle.ovrig)+sum(budgetData.hanna.lon)+sum(budgetData.hanna.bidrag)+sum(budgetData.hanna.ovrig);
-            const te = sum(budgetData.gem.utgifter)+sum(budgetData.kalle.utgifter)+sum(budgetData.hanna.utgifter);
-            const ts = ti - te;
-            const mi = (budgetData.kalle.lon[currentMonth]||0)+(budgetData.kalle.bidrag[currentMonth]||0)+(budgetData.kalle.ovrig[currentMonth]||0)+(budgetData.hanna.lon[currentMonth]||0)+(budgetData.hanna.bidrag[currentMonth]||0)+(budgetData.hanna.ovrig[currentMonth]||0);
-            const me = (budgetData.gem.utgifter[currentMonth]||0)+(budgetData.kalle.utgifter[currentMonth]||0)+(budgetData.hanna.utgifter[currentMonth]||0);
-            document.getElementById('totalIncome').textContent = fmt(ti)+' kr';
-            document.getElementById('totalExpenses').textContent = fmt(te)+' kr';
-            document.getElementById('totalSavings').textContent = fmt(ts)+' kr';
-            document.getElementById('savingsRate').textContent = 'Sparkvot: '+(ti>0?((ts/ti)*100).toFixed(1):0)+'%';
-            document.getElementById('currentMonthStat').textContent = monthNamesFull[currentMonth];
-            document.getElementById('monthBudget').textContent = fmt(mi-me)+' kr';
-        }
-
-        function renderCharts() {
-            const inc = monthNames.map((_,i)=>(budgetData.kalle.lon[i]||0)+(budgetData.kalle.bidrag[i]||0)+(budgetData.kalle.ovrig[i]||0)+(budgetData.hanna.lon[i]||0)+(budgetData.hanna.bidrag[i]||0)+(budgetData.hanna.ovrig[i]||0));
-            const exp = monthNames.map((_,i)=>(budgetData.gem.utgifter[i]||0)+(budgetData.kalle.utgifter[i]||0)+(budgetData.hanna.utgifter[i]||0));
-            const bud = inc.map((v,i)=>v-exp[i]);
-            if (incomeChart) incomeChart.destroy();
-            if (budgetChart) budgetChart.destroy();
-            incomeChart = new Chart(document.getElementById('incomeChart'), {
-                type: 'line',
-                data: { labels: monthNames, datasets: [
-                    {label:'Inkomst',data:inc,borderColor:'#2D5A7B',backgroundColor:'rgba(45,90,123,0.1)',tension:0.4,fill:true},
-                    {label:'Utgift',data:exp,borderColor:'#D4A574',backgroundColor:'rgba(212,165,116,0.1)',tension:0.4,fill:true}
-                ]},
-                options: {responsive:true,plugins:{legend:{position:'bottom'}}}
-            });
-            budgetChart = new Chart(document.getElementById('budgetChart'), {
-                type: 'bar',
-                data: { labels: monthNames, datasets: [{label:'Budget',data:bud,backgroundColor:bud.map(v=>v>=0?'#4A9B8E':'#c74545'),borderRadius:6}]},
-                options: {responsive:true,plugins:{legend:{display:false}}}
-            });
-        }
-
-        async function saveIncomeData() {
-            try {
-                budgetData.kalle.lon[currentMonth] = parseFloat(document.getElementById('kalleLon').value)||0;
-                budgetData.kalle.bidrag[currentMonth] = parseFloat(document.getElementById('kalleBidrag').value)||0;
-                budgetData.kalle.ovrig[currentMonth] = parseFloat(document.getElementById('kalleOvrig').value)||0;
-                budgetData.hanna.lon[currentMonth] = parseFloat(document.getElementById('hannaLon').value)||0;
-                budgetData.hanna.bidrag[currentMonth] = parseFloat(document.getElementById('hannaBidrag').value)||0;
-                budgetData.hanna.ovrig[currentMonth] = parseFloat(document.getElementById('hannaOvrig').value)||0;
-                const c = String.fromCharCode(66+currentMonth);
-                await upd(sheetNames.kalle,c+'1',budgetData.kalle.lon[currentMonth]);
-                await upd(sheetNames.kalle,c+'2',budgetData.kalle.bidrag[currentMonth]);
-                await upd(sheetNames.kalle,c+'3',budgetData.kalle.ovrig[currentMonth]);
-                await upd(sheetNames.hanna,c+'1',budgetData.hanna.lon[currentMonth]);
-                await upd(sheetNames.hanna,c+'2',budgetData.hanna.bidrag[currentMonth]);
-                await upd(sheetNames.hanna,c+'3',budgetData.hanna.ovrig[currentMonth]);
-                alert('✅ Sparat!');
-                updateStats();
-                renderCharts();
-            } catch(e) { alert('❌ '+e.message); }
-        }
-
-        async function upd(sheet,cell,val) {
-            const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheet)}!${cell}?valueInputOption=RAW`, {
-                method:'PUT', headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'}, body:JSON.stringify({values:[[val]]})
-            });
-            if (!r.ok) throw new Error('Kunde inte spara');
-        }
-
-        // === Utgiftshantering ===
-        let currentView = 'overview';
-        let expensesData = [];
 
         function switchView(view) {
             currentView = view;
-            document.getElementById('overviewView').style.display = view === 'overview' ? 'block' : 'none';
+            document.getElementById('viewDashboard').classList.toggle('active', view === 'dashboard');
+            document.getElementById('viewExpenses').classList.toggle('active', view === 'expenses');
+            document.getElementById('dashboardView').style.display = view === 'dashboard' ? 'block' : 'none';
             document.getElementById('expensesView').style.display = view === 'expenses' ? 'block' : 'none';
-            document.getElementById('viewTabOverview').classList.toggle('active', view === 'overview');
-            document.getElementById('viewTabExpenses').classList.toggle('active', view === 'expenses');
-            if (view === 'expenses') renderExpensesTable();
+            render();
         }
 
-        function renderExpensesTable() {
-            if (!budgetData.gem.rawData) return;
-            const raw = budgetData.gem.rawData;
-            expensesData = [];
-            const categories = new Set();
+        function renderDashboard() {
+            const data = allYearsData[currentYear];
+            const prevYear = (parseInt(currentYear) - 1).toString();
+            const prevData = allYearsData[prevYear];
+
+            if (!data) {
+                document.getElementById('categoryGrid').innerHTML = '<p>Ingen data för detta år.</p>';
+                return;
+            }
+
+            const m = currentMonth;
             
-            // Parsa utgifter från rad 3 och nedåt (rad 1 = rubriker, rad 2 = summa)
-            for (let i = 2; i < raw.length; i++) {
-                const r = raw[i];
-                if (!r || !r[0] || r[0].trim() === '') continue;
-                const name = r[0] || '';
-                const cat = r[1] || 'Övrigt';
-                const vals = [];
-                for (let m = 2; m <= 13; m++) vals.push(parseFloat(r[m]) || 0);
-                if (vals.some(v => v > 0) || name) {
-                    expensesData.push({ row: i + 1, name, category: cat, values: vals });
-                    categories.add(cat);
+            // Beräkna månadens värden
+            const income = (data.kalle.lon[m] || 0) + (data.kalle.bidrag[m] || 0) + (data.kalle.ovrig[m] || 0) +
+                          (data.hanna.lon[m] || 0) + (data.hanna.bidrag[m] || 0) + (data.hanna.ovrig[m] || 0);
+            
+            const expenses = (data.gemUtgifter[m] || 0) + (data.kalle.utgifter[m] || 0) + (data.hanna.utgifter[m] || 0);
+            
+            // Beräkna sparande från kategori
+            const savings = data.categories['Sparande'] ? data.categories['Sparande'][m] : 0;
+            const budget = income - expenses;
+
+            // Föregående års värden
+            let prevIncome = 0, prevExpenses = 0;
+            if (prevData) {
+                prevIncome = (prevData.kalle.lon[m] || 0) + (prevData.kalle.bidrag[m] || 0) + (prevData.kalle.ovrig[m] || 0) +
+                            (prevData.hanna.lon[m] || 0) + (prevData.hanna.bidrag[m] || 0) + (prevData.hanna.ovrig[m] || 0);
+                prevExpenses = (prevData.gemUtgifter[m] || 0) + (prevData.kalle.utgifter[m] || 0) + (prevData.hanna.utgifter[m] || 0);
+            }
+
+            // Uppdatera KPI:er
+            document.getElementById('monthIncome').textContent = fmt(income) + ' kr';
+            document.getElementById('monthIncomeYoY').textContent = prevData ? yoyText(income, prevIncome) : '';
+            
+            document.getElementById('monthExpenses').textContent = fmt(expenses) + ' kr';
+            document.getElementById('monthExpensesYoY').textContent = prevData ? yoyText(expenses, prevExpenses) : '';
+            
+            document.getElementById('monthSavings').textContent = fmt(savings) + ' kr';
+            document.getElementById('savingsRate').textContent = income > 0 ? `${((savings/income)*100).toFixed(1)}% av inkomst` : '';
+            
+            document.getElementById('monthBudget').textContent = fmt(budget) + ' kr';
+            document.getElementById('budgetPercent').textContent = income > 0 ? `${((budget/income)*100).toFixed(1)}% kvar` : '';
+
+            // 50/30/20-regeln
+            renderBudgetRule(data, m, income);
+            
+            // Kategorier
+            renderCategories(data, prevData, m);
+            
+            // Insikter
+            renderInsights(data, prevData, m, income);
+            
+            // Uppsagda tjänster
+            renderCancelledServices(data, prevData);
+            
+            // Grafer
+            renderCharts(data);
+        }
+
+        function renderBudgetRule(data, m, income) {
+            document.getElementById('ruleMonth').textContent = MONTHS_FULL[m];
+            
+            if (income === 0) return;
+
+            let needs = 0, wants = 0, savings = 0;
+            
+            Object.entries(data.categories).forEach(([cat, values]) => {
+                const val = values[m] || 0;
+                if (NEEDS_CATEGORIES.some(c => cat.toLowerCase().includes(c.toLowerCase()))) {
+                    needs += val;
+                } else if (SAVINGS_CATEGORIES.some(c => cat.toLowerCase().includes(c.toLowerCase()))) {
+                    savings += val;
+                } else {
+                    wants += val;
+                }
+            });
+
+            const needsPct = (needs / income) * 100;
+            const wantsPct = (wants / income) * 100;
+            const savingsPct = (savings / income) * 100;
+
+            document.getElementById('needsPercent').textContent = needsPct.toFixed(1) + '%';
+            document.getElementById('needsBar').style.width = Math.min(needsPct, 100) + '%';
+            document.getElementById('needsBar').style.background = needsPct > 50 ? 'var(--danger)' : 'var(--primary)';
+
+            document.getElementById('wantsPercent').textContent = wantsPct.toFixed(1) + '%';
+            document.getElementById('wantsBar').style.width = Math.min(wantsPct, 100) + '%';
+            document.getElementById('wantsBar').style.background = wantsPct > 30 ? 'var(--danger)' : 'var(--accent)';
+
+            document.getElementById('savingsPercent').textContent = savingsPct.toFixed(1) + '%';
+            document.getElementById('savingsBar').style.width = Math.min(savingsPct, 100) + '%';
+            document.getElementById('savingsBar').style.background = savingsPct < 20 ? 'var(--warning)' : 'var(--secondary)';
+        }
+
+        function renderCategories(data, prevData, m) {
+            document.getElementById('categoryMonth').textContent = MONTHS_FULL[m];
+            
+            const maxVal = Math.max(...Object.values(data.categories).map(v => v[m] || 0));
+            
+            let html = '';
+            const sortedCats = Object.entries(data.categories)
+                .filter(([_, vals]) => vals[m] > 0)
+                .sort((a, b) => b[1][m] - a[1][m]);
+
+            sortedCats.forEach(([cat, values]) => {
+                const val = values[m];
+                const prevVal = prevData && prevData.categories[cat] ? prevData.categories[cat][m] : 0;
+                
+                let trendClass = '';
+                let trendText = '';
+                
+                if (prevData) {
+                    if (prevVal === 0 && val > 0) {
+                        trendClass = 'new';
+                        trendText = '🆕 Ny';
+                    } else if (prevVal > 0) {
+                        const change = ((val - prevVal) / prevVal) * 100;
+                        if (change > 5) {
+                            trendClass = 'increased';
+                            trendText = `⬆️ +${change.toFixed(0)}%`;
+                        } else if (change < -5) {
+                            trendClass = 'decreased';
+                            trendText = `⬇️ ${change.toFixed(0)}%`;
+                        } else {
+                            trendText = '➖ Stabil';
+                        }
+                    }
+                }
+
+                const barWidth = maxVal > 0 ? (val / maxVal) * 100 : 0;
+
+                html += `
+                    <div class="category-card ${trendClass}">
+                        <div class="category-header">
+                            <span class="category-name">${cat}</span>
+                            <span class="category-trend">${trendText}</span>
+                        </div>
+                        <div class="category-amount">${fmt(val)} kr</div>
+                        ${prevData ? `<div class="category-comparison">Förra året: ${fmt(prevVal)} kr</div>` : ''}
+                        <div class="category-bar">
+                            <div class="category-bar-fill" style="width: ${barWidth}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('categoryGrid').innerHTML = html || '<p>Inga utgifter denna månad.</p>';
+        }
+
+        function renderInsights(data, prevData, m, income) {
+            const insights = [];
+            
+            // Sparkvot
+            const savings = data.categories['Sparande'] ? data.categories['Sparande'][m] : 0;
+            const savingsRate = income > 0 ? (savings / income) * 100 : 0;
+            
+            if (savingsRate >= 20) {
+                insights.push({ icon: '🎉', text: `Fantastiskt! Du sparar ${savingsRate.toFixed(1)}% - över målet på 20%` });
+            } else if (savingsRate >= 10) {
+                insights.push({ icon: '👍', text: `Du sparar ${savingsRate.toFixed(1)}% - ${(20 - savingsRate).toFixed(1)}% kvar till 20%-målet` });
+            } else if (income > 0) {
+                insights.push({ icon: '💡', text: `Sparkvoten är ${savingsRate.toFixed(1)}% - försök nå 20% för långsiktig trygghet` });
+            }
+
+            // Största förändring YoY
+            if (prevData) {
+                let biggestIncrease = { cat: '', change: 0 };
+                let biggestDecrease = { cat: '', change: 0 };
+                
+                Object.entries(data.categories).forEach(([cat, values]) => {
+                    const val = values[m];
+                    const prevVal = prevData.categories[cat] ? prevData.categories[cat][m] : 0;
+                    if (prevVal > 0) {
+                        const change = ((val - prevVal) / prevVal) * 100;
+                        if (change > biggestIncrease.change) biggestIncrease = { cat, change };
+                        if (change < biggestDecrease.change) biggestDecrease = { cat, change };
+                    }
+                });
+
+                if (biggestIncrease.change > 10) {
+                    insights.push({ icon: '📈', text: `${biggestIncrease.cat} har ökat mest: +${biggestIncrease.change.toFixed(0)}% jämfört med förra året` });
+                }
+                if (biggestDecrease.change < -10) {
+                    insights.push({ icon: '📉', text: `${biggestDecrease.cat} har minskat: ${biggestDecrease.change.toFixed(0)}% jämfört med förra året` });
                 }
             }
 
-            // Fyll i kategorifilter
+            // Boendekostnad
+            const housingCost = data.categories['Boende'] ? data.categories['Boende'][m] : 0;
+            const housingRatio = income > 0 ? (housingCost / income) * 100 : 0;
+            if (housingRatio > 35) {
+                insights.push({ icon: '🏠', text: `Boendekostnaden är ${housingRatio.toFixed(1)}% av inkomsten - över rekommenderade 35%` });
+            } else if (housingRatio > 0) {
+                insights.push({ icon: '🏠', text: `Boendekostnaden är ${housingRatio.toFixed(1)}% av inkomsten - bra!` });
+            }
+
+            document.getElementById('insightsList').innerHTML = insights.length > 0 
+                ? insights.map(i => `<li><span class="insight-icon">${i.icon}</span>${i.text}</li>`).join('')
+                : '<li><span class="insight-icon">📊</span>Välj en månad med data för att se insikter</li>';
+        }
+
+        function renderCancelledServices(data, prevData) {
+            const card = document.getElementById('cancelledCard');
+            const list = document.getElementById('cancelledList');
+            
+            if (!prevData) {
+                card.style.display = 'none';
+                return;
+            }
+
+            const currentNames = new Set(data.expenses.map(e => e.name.toLowerCase()));
+            const cancelled = prevData.expenses.filter(e => !currentNames.has(e.name.toLowerCase()));
+            
+            if (cancelled.length === 0) {
+                card.style.display = 'none';
+                return;
+            }
+
+            const totalSaved = cancelled.reduce((sum, e) => sum + e.values.reduce((a, b) => a + b, 0), 0);
+
+            card.style.display = 'block';
+            list.innerHTML = cancelled.map(e => {
+                const yearlyAmount = e.values.reduce((a, b) => a + b, 0);
+                return `
+                    <div class="cancelled-item">
+                        <span>${e.name} (${e.category})</span>
+                        <span class="cancelled-savings">Sparat: ${fmt(yearlyAmount)} kr/år</span>
+                    </div>
+                `;
+            }).join('') + `
+                <div class="cancelled-item" style="font-weight: 700; margin-top: 0.5rem; border-top: 2px solid var(--border); padding-top: 0.75rem;">
+                    <span>Totalt sparat</span>
+                    <span class="cancelled-savings">${fmt(totalSaved)} kr/år</span>
+                </div>
+            `;
+        }
+
+        function renderCharts(data) {
+            // Income vs Expenses chart
+            const monthlyIncome = MONTHS.map((_, i) => 
+                (data.kalle.lon[i] || 0) + (data.kalle.bidrag[i] || 0) + (data.kalle.ovrig[i] || 0) +
+                (data.hanna.lon[i] || 0) + (data.hanna.bidrag[i] || 0) + (data.hanna.ovrig[i] || 0)
+            );
+            const monthlyExpenses = MONTHS.map((_, i) => 
+                (data.gemUtgifter[i] || 0) + (data.kalle.utgifter[i] || 0) + (data.hanna.utgifter[i] || 0)
+            );
+
+            if (incomeChart) incomeChart.destroy();
+            incomeChart = new Chart(document.getElementById('incomeChart'), {
+                type: 'line',
+                data: {
+                    labels: MONTHS,
+                    datasets: [
+                        { label: 'Inkomst', data: monthlyIncome, borderColor: '#2D5A7B', backgroundColor: 'rgba(45,90,123,0.1)', tension: 0.4, fill: true },
+                        { label: 'Utgift', data: monthlyExpenses, borderColor: '#D4A574', backgroundColor: 'rgba(212,165,116,0.1)', tension: 0.4, fill: true }
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Category chart - top 5 categories over time
+            const topCats = Object.entries(data.categories)
+                .sort((a, b) => b[1].reduce((x,y)=>x+y,0) - a[1].reduce((x,y)=>x+y,0))
+                .slice(0, 5);
+
+            const colors = ['#2D5A7B', '#4A9B8E', '#D4A574', '#8B5CF6', '#EC4899'];
+
+            if (categoryChart) categoryChart.destroy();
+            categoryChart = new Chart(document.getElementById('categoryChart'), {
+                type: 'line',
+                data: {
+                    labels: MONTHS,
+                    datasets: topCats.map(([cat, values], i) => ({
+                        label: cat,
+                        data: values,
+                        borderColor: colors[i],
+                        tension: 0.4,
+                        fill: false
+                    }))
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        // === Expenses Management ===
+        function renderExpenses() {
+            const data = allYearsData[currentYear];
+            if (!data) return;
+
+            // Populate category filter
+            const categories = [...new Set(data.expenses.map(e => e.category))].sort();
             const filter = document.getElementById('categoryFilter');
-            const currentVal = filter.value;
+            const currentFilter = filter.value;
             filter.innerHTML = '<option value="all">Alla kategorier</option>' + 
-                [...categories].sort().map(c => `<option value="${c}">${c}</option>`).join('');
-            filter.value = currentVal || 'all';
+                categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            filter.value = currentFilter;
 
             filterExpenses();
         }
 
         function filterExpenses() {
+            const data = allYearsData[currentYear];
+            if (!data) return;
+
             const cat = document.getElementById('categoryFilter').value;
-            const filtered = cat === 'all' ? expensesData : expensesData.filter(e => e.category === cat);
-            const tbody = document.getElementById('expensesTableBody');
+            const filtered = cat === 'all' ? data.expenses : data.expenses.filter(e => e.category === cat);
             
-            tbody.innerHTML = filtered.map(e => {
-                const total = e.values.reduce((a,b) => a+b, 0);
+            document.getElementById('expensesTableBody').innerHTML = filtered.map(e => {
+                const total = e.values.reduce((a, b) => a + b, 0);
                 const first3 = (e.values[0] + e.values[1] + e.values[2]) / 3;
                 const last3 = (e.values[9] + e.values[10] + e.values[11]) / 3;
                 let trend = '➖';
-                if (last3 > first3 * 1.05) trend = '⬆️';
-                else if (last3 < first3 * 0.95) trend = '⬇️';
+                if (first3 > 0 && last3 > first3 * 1.05) trend = '⬆️';
+                else if (first3 > 0 && last3 < first3 * 0.95) trend = '⬇️';
                 
                 return `<tr>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); font-weight: 600;">${e.name}</td>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); color: var(--text-light);">${e.category}</td>
-                    ${e.values.map((v, m) => `<td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; cursor: pointer;" onclick="editExpense(${e.row}, ${m}, ${v})">${v > 0 ? fmt(v) : '-'}</td>`).join('')}
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: right; font-weight: 600;">${fmt(total)}</td>
-                    <td style="padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: center;">${trend}</td>
+                    <td style="font-weight: 600;">${e.name}</td>
+                    <td style="color: var(--text-light);">${e.category}</td>
+                    ${e.values.map((v, m) => `<td onclick="editExpense('${currentYear}', ${e.row}, ${m}, ${v})">${v > 0 ? fmt(v) : '-'}</td>`).join('')}
+                    <td style="font-weight: 600;">${fmt(total)}</td>
+                    <td style="text-align: center;">${trend}</td>
                 </tr>`;
             }).join('');
         }
 
-        function editExpense(rowNum, monthIdx, currentVal) {
-            const newVal = prompt(`Ange nytt värde för ${monthNamesFull[monthIdx]}:`, currentVal);
+        function editExpense(year, row, monthIdx, currentVal) {
+            const newVal = prompt(`Nytt värde för ${MONTHS_FULL[monthIdx]}:`, currentVal);
             if (newVal === null) return;
-            const val = parseFloat(newVal) || 0;
-            const col = String.fromCharCode(67 + monthIdx); // C = Jan (index 0)
             
-            upd(sheetNames.gem, `${col}${rowNum}`, val)
-                .then(() => {
-                    alert('✅ Sparat!');
-                    loadBudgetData(); // Ladda om all data
-                })
-                .catch(e => alert('❌ ' + e.message));
+            const val = parseFloat(newVal) || 0;
+            const col = String.fromCharCode(67 + monthIdx); // C = index 0
+            const data = allYearsData[year];
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${data.spreadsheetId}/values/${encodeURIComponent(data.sheets.gem)}!${col}${row}?valueInputOption=RAW`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ values: [[val]] })
+            })
+            .then(r => {
+                if (!r.ok) throw new Error('Kunde inte spara');
+                alert('✅ Sparat!');
+                loadAllYearsData();
+            })
+            .catch(e => alert('❌ ' + e.message));
+        }
+
+        // === Helpers ===
+        function fmt(n) { return Math.round(n).toLocaleString('sv-SE'); }
+        
+        function yoyText(current, prev) {
+            if (prev === 0) return '';
+            const change = ((current - prev) / prev) * 100;
+            const sign = change >= 0 ? '+' : '';
+            return `${sign}${change.toFixed(1)}% YoY`;
         }
     </script>
 </body>
